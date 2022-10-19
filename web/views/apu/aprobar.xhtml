@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../../templates/generic.xhtml">
+            <f:event type="preRenderView" listener="#{apuCtrl.verificarSesion()}"></f:event>
+            <ui:define name="content">
+                <div class="breadcrumb">
+                    <h:link styleClass="nextpath" outcome="/faces/views/home.xhtml">Home</h:link>
+                    <h:link styleClass="nextpath" outcome="/faces/views/apu/aprobar.xhtml">Aprobar Apus</h:link>
+                </div>
+                <h2 class="title-secundary">Aprobar Analisís de Precios Unitarios - APU</h2>
+                <p:messages id="messages" showDetail="true" closable="true" />
+                <div class="container-fluid">
+                    <h:form id="formList" styleClass="form-table-grayblue">
+                        <p:growl id="grow" showDetail="true" sticky="true" />
+                        <div class="row">
+                            <div class="col-md-1">
+                                <p:commandButton id="ExportExcel" styleClass="btn btn-blue" value="Exportar" ajax="false">
+                                    <p:dataExporter type="xls" target="tbl" fileName="#{apuCtrl.nameArchive}"/>
+                                </p:commandButton>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-lg-5">
+                                <div class="input-group">
+                                    <p:inputText id="txtSearch" styleClass="form-control form-buscar" value="#{apuCtrl.txtSearch}" style="margin-top: 8px !important;" placeholder="Buscar"></p:inputText>
+                                </div>
+                            </div>
+                            <div class="col-md-1">
+                                <span class="input-group-btn">
+                                    <p:commandButton id="buscar" styleClass="btn btn-blue" label="Buscar" update="tbl" value="Buscar" actionListener="#{apuCtrl.search(apuCtrl.txtSearch)}" />
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p:dataTable id="tbl" rowHover="true" var="recordApu" value="#{apuCtrl.listIfApuMaestro}" styleClass="customers" reflow="true" rows="15" paginator="true" emptyMessage="No hay Valores">                                    
+                                    <p:column headerText="Consecutivo" width="10%"> <h:outputText value="#{recordApu.consecutivo}"/> </p:column>
+                                    <p:column headerText="Nombre" width="10%"> <h:outputText value="#{recordApu.nombre}" /> </p:column>
+                                    <p:column headerText="Tipo" width="10%"> <h:outputText value="#{recordApu.tipo.nombre}"/> </p:column>
+                                    <p:column headerText="Unidad" width="10%"> <h:outputText value="#{recordApu.unidadmedida.nombre}"/> </p:column>
+                                    <p:column headerText="Creador" width="10%"> <h:outputText value="#{recordApu.usuariocreacion}"/> </p:column>
+                                    <p:column headerText="Fecha creación" width="10%">
+                                        <h:outputText value="#{recordApu.fechacreacion}">
+                                            <f:convertDateTime pattern="dd/MM/yyyy" />
+                                        </h:outputText> 
+                                    </p:column>
+                                    <p:column headerText="Estado" width="10%"> <h:outputText value="#{recordApu.etapa.nombre}"/> </p:column>
+                                    <p:column exportable="false" headerText="Acción" width="10%">
+                                        <p:commandButton id="btnapprove" styleClass="btn-approve" value="" update="tbl" action="#{apuCtrl.approveApu(recordApu)}"/>
+                                        <p:commandButton id="btncancel" styleClass="btn-cancel" value="" update="tbl" action="#{apuCtrl.cancelApu(recordApu)}"/>
+                                    </p:column>  
+                                </p:dataTable>
+                            </div>
+                        </div>
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

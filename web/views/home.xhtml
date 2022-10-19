@@ -1,0 +1,35 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../templates/generic.xhtml">
+            <!--f:event type="preRenderView" listener="{loginCtrl.verificarSesion()}"></f:event-->
+            <ui:define name="content">
+                <div class="breadcrumb">
+                    <h:link id="link_home" styleClass="nextpath" outcome="/faces/views/home.xhtml">Home</h:link>
+                </div>
+                <div class="container-fluid back-digital">
+                    <div class="row">
+                        <div class="col row-option">
+                            <div class="row">
+                                <p:repeat value="#{rolMenuCtrl.listaRolMenu}" rendered="true" var="rolMenuSon" offset="0" size="#{rolMenuCtrl.largo}" step="1" varStatus="status">
+                                    <div class="col-lg-3 col-md-4 col-sm-6" style="padding-bottom:15px; margin:center">
+                                        <h:link styleClass="btn-option " outcome="#{rolMenuSon.idMenu.ubicacion}">
+                                            <i class="fa #{rolMenuSon.idMenu.imagen} fa-font-weight" aria-hidden="true"></i>
+                                                #{rolMenuSon.idMenu.nombre}
+                                        </h:link>
+                                    </div>
+                                </p:repeat>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

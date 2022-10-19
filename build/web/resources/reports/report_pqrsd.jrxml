@@ -1,0 +1,563 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report_pqrsd" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="227bfcac-eab8-4fde-8701-9b38796320dd">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="PQRSD"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="EMPRESA" class="java.lang.Integer"/>
+	<parameter name="ID_PQRSD" class="java.lang.Integer"/>
+	<queryString>
+		<![CDATA[Select a.Id,
+      a.Fecha_Pqrsd,
+       b.Codigo As Tipo_Identificacion_Afectado,
+       a.Identificacion_Afectado,
+       a.Nombres_Afectado,
+       a.Apellidos_Afectado,
+       a.Direccion_Afectado,
+       c.Nombre || '-' || d.Nombre As Municipio_Afectado,
+       a.Telefono_Afectado,
+       a.Celular_Afectado,
+       a.Email_Afectado,
+       a.Fecha_Nacimiento_Afectado,
+       a.Genero_Afectado,
+       Bb.Codigo As Tipo_Identificacion_Contacto,
+       a.Identificacion_Contacto,
+       a.Nombres_Contacto,
+       a.Apellidos_Contacto,
+       a.Direccion_Contacto,
+       Cc.Nombre || '-' || Dd.Nombre As Municipio_Contacto,
+       a.Telefono_Contacto,
+       a.Celular_Contacto,
+       a.Email_Contacto,
+       e.Nombre As Clasificacion_Pqrsd,
+       f.Nombre As Regimen,
+       g.Nombre As Tipo_Poblacion,
+       h.Nombre As Tipo_Afiliacion,
+       i.Nombre As Motivo_Especifico,
+       Ii.Nombre As Motivo_General,
+       j.Nombre As Canal_Recepcion,
+       k.Nombre As Eps,
+       l.Nombre As Ips,
+       m.Nombre As Derecho_Vulnerado,
+        n.Nombre As Tipo_Caso,
+       a.Solicitud Descripcion_Caso,
+       a.Observacion,
+       o.Nombre As Estado_Pqrsd
+  From Pq_Pqrsd a
+ Inner Join Pg_Tipo_Identificacion b
+    On a.Tipo_Identificacion_Afectado = b.Id
+ Inner Join Pg_Municipio c
+    On a.Id_Municipio_Afectado = c.Id
+ Inner Join Pg_Departamento d
+    On c.Id_Departamento = d.Id
+  Left Join Pg_Tipo_Identificacion Bb
+    On a.Tipo_Identificacion_Contacto = Bb.Id
+  Left Join Pg_Municipio Cc
+    On a.Id_Municipio_Contacto = Cc.Id
+  Left Join Pg_Departamento Dd
+    On Cc.Id_Departamento = Dd.Id
+  Left Join Pg_Clasificacion_Pqrsd e
+    On a.Id_Clasificacion_Pqrsd = e.Id
+  Left Join Pg_Regimen_Salud f
+    On a.Id_Regimen = f.Id
+  Left Join Pg_Tipo_Poblacion g
+    On a.Id_Tipo_Poblacion = g.Id
+  Left Join Pg_Tipo_Afiliacion h
+    On a.Id_Tipo_Afiliacion = h.Id
+  Left Join Pg_Motivo i
+    On a.Id_Motivo = i.Id
+  Left Join Pg_Motivo Ii
+    On i.Padre = Ii.Id
+  Left Join Pg_Canal_Recepcion j
+    On a.Id_Canal_Recepcion = j.Id
+  Left Join Sa_Eps k
+    On a.Id_Eps_Afectado = k.Id
+  Left Join Sa_Ips l
+    On a.Id_Ips_Afectado = l.Id
+  Left Join Pg_Derecho_Vulnerado m
+    On a.Id_Derecho_Vulnerado = m.Id
+  Left Join Pg_Tipo_Caso n
+    On a.Id_Tipo_Caso = n.Id
+  Left Join Pg_Pqrsd_Estado o
+    On a.Id_Estado_Pqrsd = o.Id
+ Where a.Estadoregistro = 'A'
+   And a.Empresa =  $P{EMPRESA} 
+   And a.Id =  $P{ID_PQRSD} ]]>
+	</queryString>
+	<field name="ID" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="ID"/>
+	</field>
+	<field name="FECHA_PQRSD" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="FECHA_PQRSD"/>
+	</field>
+	<field name="TIPO_IDENTIFICACION_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_IDENTIFICACION_AFECTADO"/>
+	</field>
+	<field name="IDENTIFICACION_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IDENTIFICACION_AFECTADO"/>
+	</field>
+	<field name="NOMBRES_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRES_AFECTADO"/>
+	</field>
+	<field name="APELLIDOS_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="APELLIDOS_AFECTADO"/>
+	</field>
+	<field name="DIRECCION_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DIRECCION_AFECTADO"/>
+	</field>
+	<field name="MUNICIPIO_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MUNICIPIO_AFECTADO"/>
+	</field>
+	<field name="TELEFONO_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TELEFONO_AFECTADO"/>
+	</field>
+	<field name="CELULAR_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CELULAR_AFECTADO"/>
+	</field>
+	<field name="EMAIL_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EMAIL_AFECTADO"/>
+	</field>
+	<field name="FECHA_NACIMIENTO_AFECTADO" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.label" value="FECHA_NACIMIENTO_AFECTADO"/>
+	</field>
+	<field name="GENERO_AFECTADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="GENERO_AFECTADO"/>
+	</field>
+	<field name="TIPO_IDENTIFICACION_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_IDENTIFICACION_CONTACTO"/>
+	</field>
+	<field name="IDENTIFICACION_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IDENTIFICACION_CONTACTO"/>
+	</field>
+	<field name="NOMBRES_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="NOMBRES_CONTACTO"/>
+	</field>
+	<field name="APELLIDOS_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="APELLIDOS_CONTACTO"/>
+	</field>
+	<field name="DIRECCION_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DIRECCION_CONTACTO"/>
+	</field>
+	<field name="MUNICIPIO_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MUNICIPIO_CONTACTO"/>
+	</field>
+	<field name="TELEFONO_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TELEFONO_CONTACTO"/>
+	</field>
+	<field name="CELULAR_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CELULAR_CONTACTO"/>
+	</field>
+	<field name="EMAIL_CONTACTO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EMAIL_CONTACTO"/>
+	</field>
+	<field name="CLASIFICACION_PQRSD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CLASIFICACION_PQRSD"/>
+	</field>
+	<field name="REGIMEN" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="REGIMEN"/>
+	</field>
+	<field name="TIPO_POBLACION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_POBLACION"/>
+	</field>
+	<field name="TIPO_AFILIACION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_AFILIACION"/>
+	</field>
+	<field name="MOTIVO_ESPECIFICO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MOTIVO_ESPECIFICO"/>
+	</field>
+	<field name="MOTIVO_GENERAL" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MOTIVO_GENERAL"/>
+	</field>
+	<field name="CANAL_RECEPCION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="CANAL_RECEPCION"/>
+	</field>
+	<field name="EPS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="EPS"/>
+	</field>
+	<field name="IPS" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="IPS"/>
+	</field>
+	<field name="DERECHO_VULNERADO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DERECHO_VULNERADO"/>
+	</field>
+	<field name="TIPO_CASO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="TIPO_CASO"/>
+	</field>
+	<field name="DESCRIPCION_CASO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DESCRIPCION_CASO"/>
+	</field>
+	<field name="OBSERVACION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="OBSERVACION"/>
+	</field>
+	<field name="ESTADO_PQRSD" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ESTADO_PQRSD"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="63" splitType="Stretch">
+			<image>
+				<reportElement x="23" y="2" width="60" height="58" uuid="b21d14c0-20d9-4091-a1c2-a9a9cfeae7b2"/>
+				<imageExpression><![CDATA["logo.png"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement x="87" y="36" width="210" height="20" uuid="0e0533b8-3896-40d7-9edc-e397ab73f52c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Secretaría de salud]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="87" y="20" width="210" height="20" uuid="16c6f582-b24a-408d-829f-982b4a7ff30e"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Departamento del Atlántico]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="87" y="5" width="210" height="20" uuid="ff5f68f5-733c-4e16-8845-476e37ae05d6">
+					<property name="local_mesure_unitheight" value="pixel"/>
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[República de Colombia]]></text>
+			</staticText>
+			<image>
+				<reportElement x="424" y="10" width="111" height="41" uuid="2dddb3d1-7da6-4718-97bd-77616585185b"/>
+				<imageExpression><![CDATA["C:/Users/sis/Pictures/logoPqrsd.png"]]></imageExpression>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="40" splitType="Stretch">
+			<textField pattern="MMM d, yyyy h:mm:ss a">
+				<reportElement x="439" y="9" width="101" height="15" uuid="56a59972-3986-4d21-a943-feb839275317"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="3" width="59" height="21" uuid="cd3ebb99-80e4-4986-92c0-ec6ea1f24f0c"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[# PQRSD]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="91" y="3" width="71" height="21" uuid="255b8912-aa0d-4694-ac25-215af3bec4d8"/>
+				<textElement>
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
+			</textField>
+			<textField pattern="M/d/yy">
+				<reportElement x="91" y="24" width="71" height="15" uuid="128c892e-2ef3-47e2-abb7-b7ce79fb5371"/>
+				<textFieldExpression><![CDATA[$F{FECHA_PQRSD}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="21" y="24" width="69" height="15" uuid="481d563e-d3a9-4990-845f-0c1144621f19"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Fecha Pqrsd]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<detail>
+		<band height="595" splitType="Stretch">
+			<frame>
+				<reportElement x="20" y="14" width="520" height="136" forecolor="#777777" backcolor="#F5F5F5" uuid="beae7150-1900-4073-b44f-0fdb0bca7b48"/>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<staticText>
+					<reportElement x="9" y="8" width="110" height="15" uuid="2d8c4635-9293-4170-a425-277671a0530d"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Tipo de identificación]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="117" y="8" width="32" height="15" uuid="742b5b4f-8555-473f-b6a7-f99332ab0676"/>
+					<textFieldExpression><![CDATA[$F{TIPO_IDENTIFICACION_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="163" y="8" width="130" height="15" uuid="0179c55f-2d58-4a45-8df1-68b7655d37cd"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Número de identificación]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="296" y="8" width="84" height="15" uuid="58dd9bfc-2a8e-4b55-ac76-c46433b8d3b2"/>
+					<textFieldExpression><![CDATA[$F{IDENTIFICACION_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="9" y="42" width="181" height="15" uuid="4ad83e98-60a8-48bc-9bb8-77816882feb5"/>
+					<textFieldExpression><![CDATA[$F{NOMBRES_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="196" y="42" width="212" height="15" uuid="1be9ed22-a0df-4722-a326-abaff35e25a3"/>
+					<textFieldExpression><![CDATA[$F{APELLIDOS_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="9" y="27" width="80" height="15" uuid="ae5fb43a-a256-4e1a-b4ba-1c4551d8423a"/>
+					<text><![CDATA[Nombres]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="196" y="27" width="80" height="15" uuid="922c8d24-6040-4502-854d-2d2459ee9a73"/>
+					<text><![CDATA[Apellidos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="9" y="62" width="80" height="15" uuid="6da41d9b-6d17-462e-b7cc-73c85f4bff53"/>
+					<text><![CDATA[Dirección]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="9" y="77" width="221" height="15" uuid="29fa2273-3740-4fc8-87ee-54210f9c3f26"/>
+					<textFieldExpression><![CDATA[$F{DIRECCION_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="422" y="61" width="80" height="15" uuid="c20f791b-1c2f-40e0-ab9d-26db1d223efc"/>
+					<text><![CDATA[Celular]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="422" y="76" width="90" height="15" uuid="ed1b31c3-9950-4cd3-98a9-4d3ad740fce1"/>
+					<textFieldExpression><![CDATA[$F{CELULAR_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="420" y="8" width="40" height="15" uuid="3b8fe4d2-1668-4aae-be4f-ec5f829614df"/>
+					<textElement>
+						<font isBold="true"/>
+					</textElement>
+					<text><![CDATA[Genero]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="469" y="8" width="30" height="15" uuid="fc57308e-5d3a-4592-9a3b-52703720e9ae"/>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{GENERO_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="234" y="76" width="182" height="15" uuid="704a1727-b8a2-4d74-ac5c-c419cfb20a27"/>
+					<textFieldExpression><![CDATA[$F{MUNICIPIO_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="234" y="61" width="80" height="15" uuid="8268b4cf-8642-4974-a25f-f44c5ceb533d"/>
+					<text><![CDATA[Municipio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="432" y="27" width="80" height="15" uuid="85fff4ab-755a-4122-aca9-f86bbaa93738"/>
+					<text><![CDATA[Fecha Nac.]]></text>
+				</staticText>
+				<textField pattern="M/d/yy">
+					<reportElement x="432" y="42" width="80" height="15" uuid="9b56da54-8852-4673-9174-eb7de209564a"/>
+					<textFieldExpression><![CDATA[$F{FECHA_NACIMIENTO_AFECTADO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="10" y="99" width="109" height="15" uuid="1b65f970-9122-4720-b35c-2a04f482438a"/>
+					<text><![CDATA[Correo electrónico]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="10" y="114" width="240" height="15" uuid="105f8e20-a7ec-47e6-823e-18e13d37b6e8"/>
+					<textFieldExpression><![CDATA[$F{EMAIL_AFECTADO}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement mode="Opaque" x="37" y="7" width="130" height="15" backcolor="#E8E8E8" uuid="14817449-6dbc-444d-9cbe-8ee357760c7f"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Datos del afectado]]></text>
+			</staticText>
+			<frame>
+				<reportElement x="20" y="164" width="520" height="136" forecolor="#777777" uuid="0cb3f940-13e7-44a7-b536-3aaf9fcec063"/>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<staticText>
+					<reportElement x="9" y="8" width="110" height="15" uuid="24ce4555-cd2c-40f6-9416-203eab12589d"/>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[Tipo de identificación]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="117" y="8" width="32" height="15" uuid="e346f3fd-3c85-444c-afba-79aa5f932184"/>
+					<textFieldExpression><![CDATA[$F{TIPO_IDENTIFICACION_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="163" y="8" width="130" height="15" uuid="c2ddd725-0ed5-49f8-ad63-341fb843c4f9"/>
+					<textElement>
+						<font isBold="false"/>
+					</textElement>
+					<text><![CDATA[Número de identificación]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="296" y="8" width="84" height="15" uuid="7e412595-0e1f-45b7-b1d2-5ec2035996a2"/>
+					<textFieldExpression><![CDATA[$F{IDENTIFICACION_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="9" y="42" width="181" height="15" uuid="9c27d273-a657-42c5-86fa-57127d5f20be"/>
+					<textFieldExpression><![CDATA[$F{NOMBRES_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="204" y="42" width="212" height="15" uuid="29d6cc05-e976-42ed-a557-f3ee7d80888d"/>
+					<textFieldExpression><![CDATA[$F{APELLIDOS_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="9" y="27" width="80" height="15" uuid="5adc609e-22dd-4932-a9a0-9dc31d033011"/>
+					<text><![CDATA[Nombres]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="204" y="27" width="80" height="15" uuid="4841ac8e-a578-422c-b583-90acb9de970a"/>
+					<text><![CDATA[Apellidos]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="9" y="62" width="80" height="15" uuid="cf26e0d1-6b1a-4bce-8f97-a7aefc903c76"/>
+					<text><![CDATA[Dirección]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="9" y="77" width="240" height="15" uuid="949f12cc-9c5b-4fe5-9aba-ec48a5e446f2"/>
+					<textFieldExpression><![CDATA[$F{DIRECCION_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="421" y="26" width="80" height="15" uuid="4d3a6d5b-a7d1-4dab-bf6d-a5aa5a1bd10d"/>
+					<text><![CDATA[Celular]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="421" y="41" width="80" height="15" uuid="3a5c14e0-8278-4fe2-818f-e9bf2dc137fc"/>
+					<textFieldExpression><![CDATA[$F{CELULAR_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<textField isBlankWhenNull="true">
+					<reportElement x="256" y="76" width="184" height="15" uuid="36a328b2-bbb0-49b6-a54f-b34b95564963"/>
+					<textFieldExpression><![CDATA[$F{MUNICIPIO_CONTACTO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="256" y="61" width="80" height="15" uuid="d2a225e0-ca1b-4551-9f04-7d3104320598"/>
+					<text><![CDATA[Municipio]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="10" y="99" width="109" height="15" uuid="cdd81a7c-c4bb-497d-9f50-73a10b1cacee"/>
+					<text><![CDATA[Correo electrónico]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="10" y="114" width="240" height="15" uuid="796e16a2-0df9-49d8-8fc7-51b09d057a08"/>
+					<textFieldExpression><![CDATA[$F{EMAIL_CONTACTO}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement isPrintRepeatedValues="false" x="21" y="312" width="520" height="277" forecolor="#777777" uuid="4aa6d6eb-c378-4e92-bfe2-36546c3925f6"/>
+				<box>
+					<pen lineWidth="0.5"/>
+				</box>
+				<staticText>
+					<reportElement x="10" y="15" width="92" height="15" uuid="ebd9901e-4a8e-4681-8181-5eabef968de8"/>
+					<text><![CDATA[Clase de atención]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="10" y="31" width="126" height="15" uuid="898f3a98-ff0f-4e83-8812-4d4535a50bc8"/>
+					<textFieldExpression><![CDATA[$F{CLASIFICACION_PQRSD}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="142" y="31" width="126" height="15" uuid="2253f0b3-e9a1-40eb-8306-3f8a8f0c0062"/>
+					<textFieldExpression><![CDATA[$F{CANAL_RECEPCION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="142" y="15" width="99" height="15" uuid="bc86fd7e-8bbd-43da-a9fd-31c650b9f0b4"/>
+					<text><![CDATA[Canal de recepción]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="276" y="30" width="234" height="15" uuid="25203b99-9089-4824-8381-f909e7fb3cc6"/>
+					<textFieldExpression><![CDATA[$F{TIPO_AFILIACION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="276" y="14" width="92" height="15" uuid="ab49715e-0abd-46f1-860f-91dd66c70007"/>
+					<text><![CDATA[Tipo de afiliación]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="10" y="66" width="238" height="15" uuid="c01d5b09-c4fa-49f3-8a3a-dd7c78dcc045"/>
+					<textFieldExpression><![CDATA[$F{MOTIVO_GENERAL}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="10" y="50" width="92" height="15" uuid="599acb29-9c27-4e34-a8a4-298f16c385db"/>
+					<text><![CDATA[Motivo general]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="261" y="67" width="250" height="15" uuid="7f982630-e38c-4279-a264-5693872ecbb4"/>
+					<textFieldExpression><![CDATA[$F{MOTIVO_ESPECIFICO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="261" y="51" width="92" height="15" uuid="be12b4b5-cf4e-45df-9f46-00ffd9b1f13c"/>
+					<text><![CDATA[Motivo especifico]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="11" y="161" width="178" height="15" uuid="6579e53e-2fe1-492c-9712-bc92da4790d2"/>
+					<textFieldExpression><![CDATA[$F{TIPO_POBLACION}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="11" y="145" width="92" height="15" uuid="8fc31202-0883-4283-b18a-3a008e495de1"/>
+					<text><![CDATA[Tipo de población]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="11" y="112" width="236" height="15" uuid="c55aa808-33e7-46f1-a240-924b78d1577d"/>
+					<textFieldExpression><![CDATA[$F{EPS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="11" y="96" width="92" height="15" uuid="5396da09-f3ad-4843-b6f3-57752d350ddc"/>
+					<text><![CDATA[EAPB]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="260" y="112" width="250" height="15" uuid="92ea3e84-9bc5-4d12-9058-99b48da3f2cb"/>
+					<textFieldExpression><![CDATA[$F{IPS}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="260" y="96" width="92" height="15" uuid="7c8a6feb-5f13-4d18-aa3a-13a9feb12d98"/>
+					<text><![CDATA[IPS]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="196" y="146" width="92" height="15" uuid="e7fd0be7-77e0-4e61-8af8-db4069900853"/>
+					<text><![CDATA[Tipo de caso]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="196" y="162" width="175" height="15" uuid="ba4da77a-d28f-43d4-ada8-3d3302664920"/>
+					<textFieldExpression><![CDATA[$F{TIPO_CASO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="10" y="183" width="193" height="15" uuid="fe712dc1-898e-4205-b765-3169820f7a06"/>
+					<text><![CDATA[Descripción del caso]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="10" y="199" width="237" height="71" uuid="f26f8b0d-fe9a-4aa3-9bd8-12721c5e27e1"/>
+					<textFieldExpression><![CDATA[$F{DESCRIPCION_CASO}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="261" y="183" width="92" height="15" uuid="cf4b2f69-3bf0-4e1e-969b-56155edfcc6f"/>
+					<text><![CDATA[Observaciones]]></text>
+				</staticText>
+				<textField isBlankWhenNull="true">
+					<reportElement x="261" y="199" width="250" height="71" uuid="df48b6a2-2697-42c3-9f4f-6aecfac657ac"/>
+					<textFieldExpression><![CDATA[$F{OBSERVACION}]]></textFieldExpression>
+				</textField>
+			</frame>
+			<staticText>
+				<reportElement mode="Opaque" x="37" y="306" width="126" height="15" backcolor="#E8E8E8" uuid="d1b13053-69d8-40bc-9e5a-9d034a9f074b"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Detalle del caso]]></text>
+			</staticText>
+			<staticText>
+				<reportElement mode="Opaque" x="42" y="155" width="128" height="15" backcolor="#E8E8E8" uuid="af86c18d-1b33-4ed2-90bd-b71dde5a7d26"/>
+				<textElement textAlignment="Center">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Datos del contacto]]></text>
+			</staticText>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="26" splitType="Stretch"/>
+	</pageFooter>
+</jasperReport>

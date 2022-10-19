@@ -1,0 +1,59 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../../templates/generic.xhtml">
+            <f:event type="preRenderView" listener="#{apuCtrl.verificarSesion()}"></f:event>
+            <ui:define name="content">
+                <div class="breadcrumb">
+                    <h:link styleClass="nextpath" outcome="/faces/views/home.xhtml">Home</h:link>
+                    <h:link styleClass="nextpath" outcome="/faces/views/menu/perfil.xhtml">Perfil del usuario </h:link>
+                </div>
+                <h2 class="title-secundary">Perfil del usuario</h2>
+                <p:messages id="messages" showDetail="true" closable="true" />
+                <div class="container-fluid">
+                    Nombres: #{loginCtrl.nombreUsuarioLogin}
+                </div>
+                <br/>
+                <hr/>
+                <h3 class="title-secundary">Cambiar contraseña</h3>
+                <div class="container-fluid col-md-12" >
+                    <h:form id="formResetear">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p:outputLabel for="passwordActual" value="Password actual" styleClass="text-title-front"/>
+                                <p:password id="passwordActual" required="true" requiredMessage="Ingrese nuevo password" 
+                                            styleClass="input-name" disabled="false" value= "#{loginCtrl.passwordActual}" >
+                                </p:password>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p:outputLabel for="passwordNuevo1" value="Nuevo password" styleClass="text-title-front"/>
+                                <p:password id="passwordNuevo1" required="true" requiredMessage="Ingrese nuevo password" 
+                                            styleClass="input-name" disabled="false" value= "#{loginCtrl.passwordNuevo1}" >
+                                </p:password>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p:outputLabel for="passwordNuevo2" value="Repita nuevo password" styleClass="text-title-front"/>
+                                <p:password id="passwordNuevo2" required="true" requiredMessage="Ingrese nuevo password" 
+                                            styleClass="input-name" disabled="false" value= "#{loginCtrl.passwordNuevo2}" >
+                                </p:password>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p:commandButton id="bclear" process="@this,formResetear" styleClass="btn btn-red" update="formResetear" value="Cambiar" actionListener="#{loginCtrl.changePassword()}" />
+                        </div>              
+                    </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

@@ -1,0 +1,232 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <f:event type="preRenderView"  listener="#{loginCtrl.verificarSesion()}"></f:event>
+        <ui:composition template="../../templates/generic.xhtml">
+            <ui:define name="content">
+                <!--<p:messages id="messages" showDetail="true" closable="true" /> -->
+                <div class="breadcrumb">
+                    <h:link styleClass="nextpath" outcome="/faces/views/home.xhtml">Home</h:link>
+                    <h:link styleClass="nextpath" outcome="/faces/views/insumos/listar.xhtml">Insumos</h:link>
+                    <h:link styleClass="nextpath" outcome="/faces/views/insumos/crearInsumo.xhtml">Crear</h:link>
+                </div>
+                <div class="container-fluid" >    
+                    <section class="container-fluid content-section" id="crearInsumo">
+                        <h:form id="formCrearInsumo">
+                            <p:focus for="grupo"/>
+                            <p:growl id="growl" showDetail="true" showSummary="false" sticky="true" />
+                            <p:remoteCommand name="onCellEdit" process="@this" update=":formCrearInsumo:tblInsumo:subtotal" />
+                            <p:fieldset id="panelGeneral" legend="INFORMACIÓN DE CLASIFICACIÓN INTERNA PARA EL INSUMO" styleClass="">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="grupo" value="GRUPO" styleClass="text-title-front"/>
+                                        <p:selectOneMenu id="grupo" required="true" requiredMessage="Ingrese GRUPO"  filter="true" 
+                                                         autoWidth="false"  value="#{insumoCtrl.grupoId}" styleClass="input-name">  
+                                            <f:selectItem  itemLabel="Seleccione un GRUPO" itemValue="-1"/>
+                                            <f:selectItems id="selectItemGrupo" value="#{insumoCtrl.listaGrupoItem}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="subgrupo" value="SUBGRUPO" styleClass="text-title-front"/>
+                                        <p:selectOneMenu id="subgrupo" required="true" requiredMessage="Ingrese GRUPO" filter="true" 
+                                                         autoWidth="false"  value="#{insumoCtrl.subgrupoId}" styleClass="input-name">  
+                                            <f:selectItem itemLabel="Seleccione un Subgrupo" itemValue="-1"/>
+                                            <f:selectItems id="selectItemSubgrupo" value="#{insumoCtrl.listaSubgrupoItem}" />  
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="nombre" value="Nombre para el insumo" styleClass="text-title-front"/>
+                                        <p:inputText  id="nombre" required="true" requiredMessage="Ingrese un nombre para el insumo" 
+                                                      styleClass="input-name" disabled="false" value= "#{insumoCtrl.insumo.nombre}" 
+                                                      placeholder="Nombre para insumo">
+                                        </p:inputText>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="unidad" value="Unidad de Medida" styleClass="text-title-front"/>
+                                        <p:selectOneMenu id="unidad" required="true" requiredMessage="Ingrese Unidad de medida" filter="true" 
+                                                         autoWidth="false"  value="#{insumoCtrl.unidadmedidaId}" styleClass="input-name">  
+                                            <f:selectItem itemLabel="Seleccione una Unidad de medida" itemValue="-1"/>
+                                            <f:selectItems id="selectItemUnidad" value="#{insumoCtrl.listaUnidadMedidaItem}" />
+                                        </p:selectOneMenu>
+                                    </div>
+                                </div>
+                                <div class="row">    
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="compuesto" value="¿Es compuesto?" styleClass="text-title-front"/>
+                                        <p:selectOneMenu id="compuesto" required="true" requiredMessage="Ingrese compuesto" filter="true" 
+                                                         autoWidth="false"  value="#{insumoCtrl.compuestoId}" styleClass="input-name">  
+                                            <f:selectItem itemLabel="Seleccione si es compuesto" itemValue="-1"/>
+                                            <f:selectItem itemLabel="NO" itemValue="N"/>
+                                            <f:selectItem itemLabel="SI" itemValue="S"/>
+                                        </p:selectOneMenu>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="precio" value="Precio" styleClass="text-title-front"/>
+                                        <p:inputNumber id="precio" styleClass="input-number" required="true" disabled="false" 
+                                                       value= "#{insumoCtrl.insumo.precio}"  placeholder="Ingrese el precio"></p:inputNumber>
+                                    </div>
+                                </div>
+                                <div class="row">    
+                                    <div class="col-md-12">
+                                        <p:outputLabel for="descripcion" value="Descripción del insumo" styleClass="text-title-front"/>
+                                        <p:inputTextarea id="descripcion" rows="3" required="true" value="#{insumoCtrl.insumo.descripcion}" 
+                                                         requiredMessage="Debe ingresar una descripción para el insumo" 
+                                                         styleClass="input-name" placeholder="Agregue descripción de insumo">
+                                        </p:inputTextarea>
+                                    </div>
+                                </div>
+
+                                <p:fieldset id="panelUNSPSC" legend="Clasificación UNSPSC" 
+                                            widgetVar="United Nations Standard Products and Services Code" 
+                                            styleClass="backfielset2" >
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <p:outputLabel for="segmento" value="SEGMENTO" styleClass="text-title-front"/>
+                                            <p:selectOneMenu id="segmento" required="true" requiredMessage="Ingrese SEGMENTO" 
+                                                             filter="true" filterMatchMode="contains"
+                                                             autoWidth="false"  value="#{insumoCtrl.segmentoId}" styleClass="input-name">  
+                                                <f:selectItem itemLabel="Seleccione un SEGMENTO" itemValue="-1"/>
+                                                <f:selectItems id="selectItemSegmento" value="#{insumoCtrl.listaSegmentoItem}" />
+                                                <p:ajax listener="#{insumoCtrl.updateSegmento()}" update="familia" ></p:ajax>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <p:outputLabel for="familia" value="FAMILIA" styleClass="text-title-front"/>
+                                            <p:selectOneMenu id="familia" required="true" requiredMessage="Ingrese FAMILIA" 
+                                                             filter="true" filterMatchMode="contains"
+                                                             autoWidth="false"  value="#{insumoCtrl.familiaId}" styleClass="input-name">  
+                                                <f:selectItem itemLabel="Seleccione una FAMILIA" itemValue="-1"/>
+                                                <f:selectItems id="selectItemFamilia" value="#{insumoCtrl.listaFamiliaItem}" />
+                                                <p:ajax listener="#{insumoCtrl.updateFamilia()}" update="clase" ></p:ajax>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <p:outputLabel for="clase" value="CLASE" styleClass="text-title-front"/>
+                                            <p:selectOneMenu id="clase" required="true" requiredMessage="Ingrese CLASE" 
+                                                             filter="true" filterMatchMode="contains"
+                                                             autoWidth="false"  value="#{insumoCtrl.claseId}" styleClass="input-name">  
+                                                <f:selectItem itemLabel="Seleccione una CLASE" itemValue="-1"/>
+                                                <f:selectItems id="selectItemClase" value="#{insumoCtrl.listaClaseItem}" />
+                                                <p:ajax listener="#{insumoCtrl.updateClase()}" update="producto" ></p:ajax>
+                                            </p:selectOneMenu>
+                                        </div>
+
+                                        <div class="col-md-3">
+                                            <p:outputLabel for="producto" value="PRODUCTO" styleClass="text-title-front"/>
+                                            <p:selectOneMenu id="producto" required="true" requiredMessage="Ingrese PRODUCTO" 
+                                                             filter="true" filterMatchMode="contains"
+                                                             autoWidth="false"  value="#{insumoCtrl.productoId}" styleClass="input-name" >  
+                                                <f:selectItem itemLabel="Seleccione un PRODUCTO" itemValue="-1"/>
+                                                <f:selectItems id="selectItemProducto" value="#{insumoCtrl.listaProductoItem}" />  
+                                            </p:selectOneMenu>
+                                        </div>
+                                    </div>
+                                </p:fieldset>
+                            </p:fieldset>
+
+                            <br/>
+                            <p:fieldset id="panelDetalle" legend="DETALLE DE INSUMOS" styleClass="">
+                                <p:panel id="busqueda" header="Búsqueda de INSUMOS" >
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <p:inputText  id="unspsc" required="false" requiredMessage="Ingrese lo que desea buscar" 
+                                                          styleClass="input-name" disabled="false" value= "#{insumoCtrl.txtSearch}" 
+                                                          placeholder="Busqueda de insumo">
+                                            </p:inputText>
+                                        </div>
+
+                                        <div class="col-md-2">
+                                            <p:commandButton id="buscarUnspsc" process="@this, unspsc" styleClass="btn btn-blue" 
+                                                             update="tblInsumoTemporal" value="Buscar" actionListener="#{insumoCtrl.listarInsumoUNSPSC()}">
+                                            </p:commandButton>  
+                                        </div>
+                                        <div class="col-md-2">
+                                            <p:commandButton id="bclear" process="@this, unspsc" styleClass="btn btn-red" 
+                                                             update="tblInsumoTemporal, unspsc" value="Limpiar" 
+                                                             actionListener="#{insumoCtrl.limpiarSearch()}" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p:dataTable id="tblInsumoTemporal" style="custormers" editable="false" rowHover="true" 
+                                                         var="record1" editMode="cell" value="#{insumoCtrl.listaInsumoSearch2}" 
+                                                         reflow="true" rows="10" paginator="false" emptyMessage="No hay Valores">                     
+                                                <p:column headerText="Código Interno" width="10%"> <h:outputText value="#{record1.codigo}"/> </p:column>
+                                                <p:column headerText="Grupo" width="10%"> <h:outputText value="#{record1.grupo.nombre}"/> </p:column>
+                                                <p:column headerText="Nombre INSUMO" width="40%"> <h:outputText value="#{record1.nombre}"/> </p:column>
+                                                <p:column headerText="Valor" width="10%">
+                                                    <h:outputText value="#{record1.precio}">
+                                                        <f:convertNumber currencySymbol="$" type="currency" /></h:outputText> 
+                                                </p:column>
+                                                <p:column exportable="false" headerText="Acción" width="5%">
+                                                    <p:commandButton id="btnadd" styleClass="btn-play" value="" process="@this,tblInsumoTemporal" 
+                                                                     update=":formCrearInsumo:tblInsumo" action="#{insumoCtrl.addDetalle(record1)}"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </div>
+                                    </div>
+                                </p:panel>
+                                <br/>
+                                <p:panel id="proyectado" header="INSUMOS QUE SE ADICIONARÁN AL INSUMO">
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <p:outputPanel id="testContainer">
+                                                <p:dataTable id="tblInsumo" editable="true" rowHover="true" var="record2" value="#{insumoCtrl.listaInsumoDetalle}" 
+                                                             reflow="true" editMode="cell" rows="10" paginator="false" emptyMessage="No hay Valores">
+                                                    <!--p:ajax event="rowEdit" process="@this,:formCrearInsumo:tblInsumo, subtotal" listener="{insumoCtrl.onCellEdit}" update=":formCrearInsumo:tblInsumo" /-->
+                                                    <p:ajax event="cellEdit" listener="#{insumoCtrl.onCellEdit}" process=":formCrearInsumo:tblInsumo" update="@this, :formCrearInsumo:tblInsumo" oncomplete="onCellEdit()" />
+
+                                                    <p:column headerText="Código Interno" width="10%"> <h:outputText value="#{record2.codigo}"/> </p:column>
+                                                    <p:column headerText="Grupo" width="10%"> <h:outputText value="#{record2.grupo.nombre}"/> </p:column>
+                                                    <p:column headerText="Nombre insumo" width="40%"> <h:outputText value="#{record2.nombre}"/> </p:column>
+                                                    <p:column headerText="Unidad de medida" width="10%"> <h:outputText value="#{record2.unidadmedida.nombre}"/> </p:column>
+                                                    <p:column headerText="Valor" id="valor" width="10%" style="text-align: right;" ><h:outputText value="#{record2.precio}"><f:convertNumber currencySymbol="$" type="currency" /></h:outputText> </p:column>
+                                                    <p:column id="pcantidad" headerText="Cantidad" width="10%" style="text-align: right;">
+                                                        <p:cellEditor>
+                                                            <f:facet name="output"><h:outputText id="cantidad1" value="#{record2.cantidad}" /></f:facet>
+                                                            <f:facet name="input" ><h:inputText id="cantidad2" value="#{record2.cantidad}"/></f:facet>
+                                                        </p:cellEditor>
+                                                    </p:column>
+
+                                                    <p:column headerText="Subtotal" width="10%" style="text-align: right;" rendered="true">
+                                                        <h:outputText id="subtotal" value="#{record2.subtotal}" rendered="true">
+                                                            <f:convertNumber type="currency" currencySymbol="$" rendered="true" locale="CO"
+                                                                             pattern="¤#,###,###,###,###.00;-¤#,###,###,###,###.00#"/>
+                                                        </h:outputText>
+                                                    </p:column>
+                                                    <p:summaryRow>
+                                                        Total:
+                                                    </p:summaryRow>
+                                                    <p:column exportable="false" headerText="Acción" width="5%">
+                                                        <p:commandButton id="btndelete" styleClass="btn-delete" value="" process="@this,tblInsumo" 
+                                                                         update="tblInsumo" action="#{insumoCtrl.deleteDetalle(record2)}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:outputPanel>
+                                        </div>
+                                    </div>
+                                </p:panel>   
+                            </p:fieldset>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <p:commandButton id="save" disabled="false" styleClass="btn btn-blue" 
+                                                     update="tblVisitante" value="Almacenar" 
+                                                     ajax="false" actionListener="#{insumoCtrl.crearDb()}" />
+                                </div>
+                            </div>
+                        </h:form>
+                    </section>
+                </div>
+
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

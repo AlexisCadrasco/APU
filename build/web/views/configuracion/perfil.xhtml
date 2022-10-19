@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <body>
+        <ui:composition template="./../../templates/generic.xhtml">
+            <f:metadata>               
+            </f:metadata>
+            <ui:define name="content">
+                <div class="breadcrumb">
+                    <h:link styleClass="nextpath" outcome="/views/home.xhtml">Home</h:link>
+                    <h:link styleClass="nextpath" outcome="/views/configuracion/perfil.xhtml">Perfil de usuario</h:link>
+                </div>
+                <h2 class="title-secundary">Perfil de usuario</h2>
+                <div class="container-fluid">
+                    <div class="container-fluid">    
+                        <section class="container-fluid content-section" id="crearCliente">
+                            <h:form id="formEdit">
+                                <div class="row">
+                                    <div class="col-md-2  col-sm-6">
+                                        <p:commandButton action="#{loginControllers.goChangePassword()}" value="Cambiar contraseña" styleClass="btn btn-blue"></p:commandButton>
+                                    </div>
+                                    <div class="col-md-2 col-sm-6">
+                                        <p:commandButton action="#{loginControllers.goEdit()}" value="Editar" styleClass="btn btn-blue"></p:commandButton>
+                                    </div>
+                                    <div class="col-md-4"></div>        
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="usuarioEdit" value="Usuario" styleClass="text-title-front"/>
+                                        <p:outputLabel  id="usuarioEdit" styleClass="label-name" value= "#{loginControllers.usuarioSession.usuario}"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="documentoEdit" value="Número documento" styleClass="text-title-front"/>
+                                        <p:outputLabel  id="documentoEdit" styleClass="label-name" value= "#{loginControllers.usuarioSession.numerodocumento}"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="nombreEdit" value="Nombres" styleClass="text-title-front"/>
+                                        <p:outputLabel  id="nombreEdit" styleClass="label-name" onkeyup="this.value=this.value.toUpperCase()" value= "#{loginControllers.usuarioSession.nombres}"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="apellidosEdit" value="Apellidos" styleClass="text-title-front"/>
+                                        <p:outputLabel id="apellidosEdit" styleClass="label-name" value= "#{loginControllers.usuarioSession.apellidos}" ></p:outputLabel>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="telefonoEdit" value="Teléfono" styleClass="text-title-front"/>
+                                        <p:outputLabel  id="telefonoEdit" styleClass="label-name" value= "#{loginControllers.usuarioSession.telefono}"></p:outputLabel>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <p:outputLabel for="correoElectronicoEdit" value="Correo Electrónico" styleClass="text-title-front"/>
+                                        <p:outputLabel  id="correoElectronicoEdit" styleClass="label-name" value= "#{loginControllers.usuarioSession.correoElectronico}"></p:outputLabel>
+                                    </div>
+                                </div>                       
+                            </h:form>
+                        </section>
+                    </div>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </body>
+</html>

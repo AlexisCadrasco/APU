@@ -1,0 +1,101 @@
+<pretty-config xmlns="http://ocpsoft.org/prettyfaces/3.3.3" 
+               xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+               xsi:schemaLocation="http://ocpsoft.org/prettyfaces/3.3.3               
+      http://ocpsoft.org/xml/ns/prettyfaces/ocpsoft-pretty-faces-3.3.3.xsd">
+    
+    <url-mapping>
+        <pattern value="/index" />
+        <view-id value="/faces/views/index.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home" />
+        <view-id value="/faces/views/home.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/apu" />
+        <view-id value="/faces/views/apu/listar.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/apu/crear" />
+        <view-id value="/faces/views/apu/crearApu.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/apu/ver" />
+        <view-id value="/faces/views/apu/verApu.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/apu/buscar" />
+        <view-id value="/faces/views/apu/buscarApu.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/insumos" />
+        <view-id value="/faces/views/insumos/listar.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/insumos/crear" />
+        <view-id value="/faces/views/insumos/crearInsumo.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/insumos/ver" />
+        <view-id value="/faces/views/insumos/verInsumo.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/insumos/importar" />
+        <view-id value="/faces/views/insumos/importarInsumo.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/ppto" />
+        <view-id value="/faces/views/ppto/listar.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/ppto/crear" />
+        <view-id value="/faces/views/ppto/crearPresupuesto.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/ppto/ver" />
+        <view-id value="/faces/views/ppto/verPresupuesto.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/importar" />
+        <view-id value="/faces/views/importar/importar.xhtml" />
+    </url-mapping>
+    <!--Seguridad -->
+    <url-mapping>
+        <pattern value="/home/seguridad/rol" />
+        <view-id value="/faces/views/seguridad/rol.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/seguridad/usuario" />
+        <view-id value="/faces/views/seguridad/usuarios.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/seguridad/rolUsuario" />
+        <view-id value="/faces/views/seguridad/rolMenu.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/perfil" />
+        <view-id value="/faces/views/menu/perfil.xhtml" />
+    </url-mapping>
+    
+    <url-mapping>
+        <pattern value="/home/manual" />
+        <view-id value="/faces/views/menu/manual.xhtml" />
+    </url-mapping>
+    
+</pretty-config>

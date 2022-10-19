@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <h:head></h:head>
+    <h:body>
+        <ui:composition template="./../../templates/generic.xhtml">
+            <ui:define name="content">
+                <div class="breadcrumb">
+                    <h:link styleClass="nextpath" outcome="/faces/views/home.xhtml">Home</h:link>
+                    <h:link styleClass="nextpath" outcome="/faces/views/apu/listar.xhtml">Apus</h:link>
+                    <h:link styleClass="nextpath" outcome="/faces/views/apu/importarApu.xhtml">Importar</h:link>
+                </div>
+                <h2 class="title-secundary">Importar datos a las tablas de APU</h2>
+                <div class="container-fluid">
+                <h:form id="formImport" enctype="multipart/form-data"  prependId="false" styleClass="form-table-grayblue" >
+                    <div class="col-md-12">    
+                        <h:outputLabel value="Solo se pueden cargar archivos (xls / xlsx - Max 2MB): " />
+                    </div>
+                    <div class="col-md-6">
+                        <p:fileUpload fileUploadListener="#{fileUploadCtrl.subir}" label="Examinar" uploadLabel="Procesar" 
+                                      cancelLabel="Cancelar" accept=".xls, .xlsx" mode="advanced" dragDropSupport="false" 
+                                      update="arcSubido" sizeLimit="35000000" allowTypes="/(\.|\/)(xls|xlsx)$/" />
+                    </div>
+                    <div class="col-md-3">
+                        <h:outputLabel  id="arcSubido" value="#{fileUploadCtrl.filexls.fileName}"/>
+                    </div>
+                    <div class="col-md-12">
+                        <p:commandButton id="save" styleClass="btn btn-blue" value="Cargar" ajax="false" action="#{fileUploadCtrl.importarExcelApu()}" />
+                    </div>
+                </h:form>
+                </div>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
