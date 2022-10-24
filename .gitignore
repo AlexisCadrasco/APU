@@ -1,1 +1,8 @@
+#Excluye la carpeta con el compilado de la clases
 build/
+#Excluye la carpeta con el War del proyecto
+dist/
+#Excluye carpeta test/
+test/
+#Excluye la carpeta con la cofiguracion del proyecto en el IDE local
+nbproject/
