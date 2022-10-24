@@ -16,7 +16,7 @@
                 </div>
                 <h2 class="title-secundary">Insumos</h2>
                 <p:messages id="messages" showDetail="true" closable="true" />
-                
+
                 <div class="container-fluid">
                     <h:form id="formList" styleClass="form-table-grayblue">
                         <p:growl id="grow" showDetail="true" sticky="true" />
@@ -38,12 +38,13 @@
                             <div class="col-lg-6">
                                 <div class="input-group">
                                     <p:inputText id="txtSearch" styleClass="form-control form-buscar" value="#{insumoCtrl.txtSearch}" style="margin-top: 8px !important;" placeholder="Buscar"></p:inputText>
-                                    
+
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <span class="input-group-btn">
-                                    <p:commandButton id="buscar" tabindex="-1" styleClass="btn btn-blue" label="Buscar" update="tbl" value="Buscar" actionListener="#{insumoCtrl.search(insumoCtrl.txtSearch)}" />
+                                    <p:commandButton id="buscar" tabindex="-1" styleClass="btn btn-blue" label="Buscar"
+                                                     update="tbl grow" value="Buscar" actionListener="#{insumoCtrl.search(insumoCtrl.txtSearch)}" />
                                 </span>
                             </div>
                         </div>
@@ -73,9 +74,11 @@
                                         <h:outputText value="#{record.etapa.nombre}" /> 
                                     </p:column>
                                     <p:column exportable="false" headerText="Acción" width="10%">
-                                        <p:commandButton id="btnedit" styleClass="btn-edit" value="" update="" alt="Editar" title="Editar" action="#{insumoCtrl.edit(record)}"/>
-                                        <p:commandButton id="btndelete" styleClass="btn-delete" value="" update="tbl" alt="Eliminar" label="Eliminar" title="Eliminar" action="#{insumoCtrl.delete(record)}"/>
-                                        <p:commandButton id="btnviewer" styleClass="btn-viewer" value="" update="tbl" alt="Ver" label="Ver" title="Ver" action="#{insumoCtrl.viewer(record)}"/>
+                                        <p:commandButton id="id${insumoCtrl.random}" styleClass="btn-edit" value="${record.id}"  alt="Editar" title="Editar" >
+                                            <p:ajax event="click" listener="#{insumoCtrl.edit(record)}" process="@this" />
+                                        </p:commandButton>
+                                        <p:commandButton styleClass="btn-delete" value="" update="tbl" alt="Eliminar" label="Eliminar" title="Eliminar" action="#{insumoCtrl.delete(record)}"/>
+                                        <p:commandButton  styleClass="btn-viewer" value="" update="tbl" alt="Ver" label="Ver" title="Ver" action="#{insumoCtrl.viewer(record)}"/>
                                     </p:column>
                                 </p:dataTable>
                             </div>

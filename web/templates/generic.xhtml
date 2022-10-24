@@ -23,6 +23,15 @@
         <c:if test="#{loginCtrl.usuario eq null}">
             #{facesContext.externalContext.redirect("/APUGobAtl")}
         </c:if>
+        
+        <p:ajaxStatus style="z-index: 5000;" onstart="PF('statusDialog').show()"  
+                      onsuccess="PF('statusDialog').hide();" 
+                      onerror="window.location.replace('#{request.contextPath}/home')"/>
+
+        <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
+            <p:graphicImage url="/resources/images/uploading.gif" style="width: 50px;"/>
+        </p:dialog>
+        
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
             <a class="navbar-brand" href="javascript:void(0)">
                 <h:graphicImage value="#{resource['images/logo.png']}"></h:graphicImage>

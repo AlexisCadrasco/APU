@@ -5,6 +5,8 @@
  */
 package controllers;
 
+import co.gov.atlantico.apu.exceptions.InsumosException;
+import com.fasterxml.jackson.databind.deser.DataFormatReaders;
 import ejbs.InsumoFacade;
 import ejbs.SegmentoFacade;
 import ejbs.FamiliaFacade;
@@ -39,6 +41,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
@@ -64,6 +69,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.eclipse.persistence.exceptions.JPQLException;
+import org.jboss.weld.bean.builtin.FacadeInjectionPoint;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.event.RowEditEvent;
@@ -74,13 +81,13 @@ import org.primefaces.model.UploadedFile;
  * @author jgutierrez
  */
 @ManagedBean(name = "insumoCtrl")
-@SessionScoped
-//@ViewScoped
-public class insumoCtrl extends BaseController implements java.io.Serializable{
-  
+//@SessionScoped
+@ViewScoped
+public class insumoCtrl extends BaseController implements java.io.Serializable {
+
     @EJB
     private InsumoFacade insumoFacade;
-    
+
     @EJB
     private SegmentoFacade segmentoFacade;
 
@@ -89,7 +96,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
 
     @EJB
     private ClaseFacade claseFacade;
-    
+
     @EJB
     private GrupoFacade grupoFacade;
 
@@ -98,13 +105,13 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
 
     @EJB
     private ProductoFacade productoFacade;
-    
+
     @EJB
     private UnidadMedidaFacade unidadMedidaFacade;
-    
+
     @Resource(lookup = "jdbc/apu")
     private DataSource dataSource;
-    
+
     private GeInsumo insumo = new GeInsumo();
     private GeSubGrupo subgrupo = new GeSubGrupo();
     private GeUnidadMedida unidadMedida = new GeUnidadMedida();
@@ -115,19 +122,19 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     private BigDecimal claseId = null;
     private BigDecimal productoId = null;
     private String txtSearch;
-    private String path = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
+    private final String PATH = FacesContext.getCurrentInstance().getExternalContext().getRequestContextPath();
     private String nameFile;
-    private List<GeInsumo> listaInsumo = new ArrayList<GeInsumo>() ;
-    private List<GeInsumo> listaInsumoSearch= new ArrayList<GeInsumo>();
-    private List<GeInsumo> listaInsumoSearch2= new ArrayList<GeInsumo>();
-    private List<GeInsumo> listaInsumoDetalle = new ArrayList<GeInsumo>();
-    private ArrayList<SelectItem> listaSegmentoItem;
-    private ArrayList<SelectItem> listaFamiliaItem;
-    private ArrayList<SelectItem> listaClaseItem;
-    private ArrayList<SelectItem> listaProductoItem;
-    private ArrayList<SelectItem> listaGrupoItem;
-    private ArrayList<SelectItem> listaSubgrupoItem;
-    private ArrayList<SelectItem> listaUnidadMedidaItem;
+    private List<GeInsumo> listaInsumo = new ArrayList<>();
+    private List<GeInsumo> listaInsumoSearch = new ArrayList<>();
+    private List<GeInsumo> listaInsumoSearch2 = new ArrayList<>();
+    private List<GeInsumo> listaInsumoDetalle = new ArrayList<>();
+    private ArrayList<SelectItem> listaSegmentoItem = new ArrayList<>();
+    private ArrayList<SelectItem> listaFamiliaItem = new ArrayList<>();
+    private ArrayList<SelectItem> listaClaseItem = new ArrayList<>();
+    private ArrayList<SelectItem> listaProductoItem = new ArrayList<>();
+    private ArrayList<SelectItem> listaGrupoItem = new ArrayList<>();
+    private ArrayList<SelectItem> listaSubgrupoItem = new ArrayList<>();
+    private ArrayList<SelectItem> listaUnidadMedidaItem = new ArrayList<>();
     private UploadedFile filexls;
     private BigDecimal grupoId;
     private BigDecimal subgrupoId;
@@ -135,189 +142,271 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     private Character compuestoId;
     private UploadedFile archivo;
     private String nombreArchivo;
-    
-    public void search(String txt)
-    {
-        this.listaInsumo.clear();
-        for (GeInsumo obj : insumoFacade.listaInsumoSearchLista(txt))
-        {
-            listaInsumo.add(obj);
+
+    /**
+     * @param txt String, texto a buscar.
+     */
+    public void search(String txt) {
+        try {
+            this.listaInsumo.clear();
+            setListaInsumo(insumoFacade.listaInsumoSearchLista(txt));
+
+            if (getListaInsumo() != null) {
+                if (getListaInsumo().isEmpty()) {
+                    throw new InsumosException("No se han encontrado datos.", 2);
+                }
+            }
+
+            /*for (GeInsumo obj : getListaInsumo()) {
+                listaInsumo.add(obj);
+            }*/
+            //    this.listaInsumo = listaInsumo;
+        } catch (javax.ejb.EJBException ex) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Alerta.",
+                            ex.getCausedByException().getCause().getMessage()
+                    ));
+        } catch (InsumosException ie) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.INFO, null, ie);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            ie.getNivelFacesMessage(),
+                            ie.getTitle(),
+                            ie.getMessage()
+                    ));
+        } catch (Exception x) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, x);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Alerta.",
+                            x.getCause() != null ? x.getCause().getMessage() : x.getMessage()
+                    ));
         }
-        this.listaInsumo = listaInsumo;
     }
-    
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public void crearDb() throws IOException, SQLException
-    {
-        FacesContext contextFaces = FacesContext.getCurrentInstance();
-        PgUsuario us = (PgUsuario) contextFaces.getExternalContext().getSessionMap().get("usuario");
-        CallableStatement cstmt = null;
-        Connection connection = dataSource.getConnection();
-        oracle.jdbc.OracleConnection oraCon = connection.unwrap(oracle.jdbc.OracleConnection.class);
-        StructDescriptor recApuDetalle  = StructDescriptor.createDescriptor("T_DETALLE_GENERICO", oraCon);
-        ArrayDescriptor arrayDetalleApu = ArrayDescriptor.createDescriptor("ARRAY_DETALLE_GENERICO", oraCon);
-        
-        Object[] arrayDetalle = new Object[this.listaInsumoDetalle.size()];
-        Object[] objDetalle;
-        int idx = 0;
-        /////////////////////////////
-        for (int i = 0 ; i < this.listaInsumoDetalle.size(); i++){ 
+    public void crearDb() {
+        try {
+            if (getListaInsumoDetalle().isEmpty() && getCompuestoId().equals('S')) {
+                throw new InsumosException("Se debe escoger al menos un insumo para adicionar", 2);
+            }
+
+            FacesContext contextFaces = FacesContext.getCurrentInstance();
+            PgUsuario us = (PgUsuario) contextFaces.getExternalContext().getSessionMap().get("usuario");
+            CallableStatement cstmt = null;
+            Connection connection = dataSource.getConnection();
+            oracle.jdbc.OracleConnection oraCon = connection.unwrap(oracle.jdbc.OracleConnection.class);
+            StructDescriptor recApuDetalle = StructDescriptor.createDescriptor("T_DETALLE_GENERICO", oraCon);
+            ArrayDescriptor arrayDetalleApu = ArrayDescriptor.createDescriptor("ARRAY_DETALLE_GENERICO", oraCon);
+
+            Object[] arrayDetalle = new Object[this.listaInsumoDetalle.size()];
+            Object[] objDetalle;
+            int idx = 0;
+            /////////////////////////////
+            for (int i = 0; i < this.listaInsumoDetalle.size(); i++) {
+                /*
+                ID     NUMBER
+                NOMBRE VARCHAR2(500)
+                CANTIDAD NUMBER
+                 */
+                objDetalle = new Object[3];
+
+                objDetalle[0] = listaInsumoDetalle.get(i).getId();
+                objDetalle[1] = listaInsumoDetalle.get(i).getNombre();
+                objDetalle[2] = listaInsumoDetalle.get(i).getCantidad();
+
+                STRUCT oracle_record = new STRUCT(recApuDetalle, oraCon, objDetalle);
+                arrayDetalle[idx] = oracle_record;
+                idx++;
+            }
+            /////////////////////////////
+            ARRAY oracleArrayDetalle = new ARRAY(arrayDetalleApu, oraCon, arrayDetalle);
+            oraCon = connection.unwrap(oracle.jdbc.OracleConnection.class);
+
+            cstmt = oraCon.prepareCall("{call PQ_APU.PR_INSERTA_INSUMO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
             /*
-            ID     NUMBER
-            NOMBRE VARCHAR2(500)
-            CANTIDAD NUMBER
-            */
-            objDetalle = new Object[3];
+            p_Grupo           IN VARCHAR2,
+            p_Subgrupo        IN VARCHAR2,
+            p_Nombre          IN VARCHAR2,
+            p_Descripcion     IN VARCHAR2,
+            p_Unidad_Medida   IN NUMBER,
+            p_Marca           IN NUMBER,
+            p_Compuesto       IN CHAR,
+            p_Rendimiento     IN NUMBER,
+            p_Cantidad        IN NUMBER,
+            p_Precio          IN NUMBER,
+            p_Segmento        IN NUMBER,
+            p_Clase           IN NUMBER,
+            p_Familia         IN NUMBER,
+            p_Producto        IN NUMBER,
+            p_Empresa         IN NUMBER,
+            p_Usuariocreacion IN VARCHAR2,
+            p_Detalle         IN Array_Detalle_Generico,
+            p_Codigo          OUT VARCHAR2,
+            Error_Num         OUT NUMBER,
+            Error_Msg         OUT VARCHAR2
+             */
+            cstmt.setBigDecimal(1, grupoId);
+            cstmt.setBigDecimal(2, subgrupoId);
+            cstmt.setString(3, insumo.getNombre());
+            cstmt.setString(4, insumo.getDescripcion());
+            cstmt.setBigDecimal(5, unidadmedidaId);
+            cstmt.setBigDecimal(6, null);
+            cstmt.setString(7, compuestoId.toString());
+            cstmt.setString(8, null);//rendimiento
+            cstmt.setBigDecimal(9, BigDecimal.ONE);//Cantidad
+            cstmt.setBigDecimal(10, insumo.getPrecio());
+            cstmt.setBigDecimal(11, segmentoId);
+            cstmt.setBigDecimal(12, claseId);
+            cstmt.setBigDecimal(13, familiaId);
+            cstmt.setBigDecimal(14, productoId);
+            cstmt.setBigDecimal(15, BigDecimal.ONE);//empresa
+            cstmt.setString(16, us.getUsuario());
+            cstmt.setArray(17, oracleArrayDetalle);
+            cstmt.registerOutParameter(18, OracleTypes.VARCHAR);
+            cstmt.registerOutParameter(19, OracleTypes.BIGINT);
+            cstmt.registerOutParameter(20, OracleTypes.VARCHAR);
 
-            objDetalle[0] = listaInsumoDetalle.get(i).getId();
-            objDetalle[1] = listaInsumoDetalle.get(i).getNombre();
-            objDetalle[2] = listaInsumoDetalle.get(i).getCantidad();
+            cstmt.executeQuery();
+            String v_consecutivo = cstmt.getString(18);
+            this.listaInsumo = insumoFacade.listaInsumo();
 
-            STRUCT oracle_record = new STRUCT(recApuDetalle, oraCon, objDetalle);
-            arrayDetalle[idx] = oracle_record;
-            idx++;
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se creo el insumo con código " + v_consecutivo));
+
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/APUGobAtl/home/insumos");
+
+        } catch (SQLException ex) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_FATAL,
+                            "Alerta SQL.",
+                            ex.getMessage()
+                    ));
+        } catch (InsumosException ie) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ie);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            ie.getNivelFacesMessage(),
+                            ie.getTitle(),
+                            ie.getMessage()
+                    ));
+        } catch (IOException e) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, e);
+            FacesContext.getCurrentInstance().addMessage(
+                    null,
+                    new FacesMessage(
+                            FacesMessage.SEVERITY_ERROR,
+                            "Alerta",
+                            "Se aproducido un error inesperado. <br> intente nuevamente."
+                    ));
         }
-        /////////////////////////////
-        ARRAY oracleArrayDetalle = new ARRAY(arrayDetalleApu, oraCon, arrayDetalle);
-        oraCon = connection.unwrap(oracle.jdbc.OracleConnection.class);
-        
-        cstmt = oraCon.prepareCall("{call PQ_APU.PR_INSERTA_INSUMO(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}");
-        /*
-        p_Grupo           IN VARCHAR2,
-        p_Subgrupo        IN VARCHAR2,
-        p_Nombre          IN VARCHAR2,
-        p_Descripcion     IN VARCHAR2,
-        p_Unidad_Medida   IN NUMBER,
-        p_Marca           IN NUMBER,
-        p_Compuesto       IN CHAR,
-        p_Rendimiento     IN NUMBER,
-        p_Cantidad        IN NUMBER,
-        p_Precio          IN NUMBER,
-        p_Segmento        IN NUMBER,
-        p_Clase           IN NUMBER,
-        p_Familia         IN NUMBER,
-        p_Producto        IN NUMBER,
-        p_Empresa         IN NUMBER,
-        p_Usuariocreacion IN VARCHAR2,
-        p_Detalle         IN Array_Detalle_Generico,
-        p_Codigo          OUT VARCHAR2,
-        Error_Num         OUT NUMBER,
-        Error_Msg         OUT VARCHAR2
-        */
-        cstmt.setBigDecimal(1, grupoId);
-        cstmt.setBigDecimal(2, subgrupoId);
-        cstmt.setString(3, insumo.getNombre());
-        cstmt.setString(4, insumo.getDescripcion());
-        cstmt.setBigDecimal(5, unidadmedidaId);
-        cstmt.setBigDecimal(6, null);
-        cstmt.setString(7, compuestoId.toString());
-        cstmt.setString(8, null);//rendimiento
-        cstmt.setBigDecimal(9, BigDecimal.ONE);//Cantidad
-        cstmt.setBigDecimal(10, insumo.getPrecio());
-        cstmt.setBigDecimal(11, segmentoId);
-        cstmt.setBigDecimal(12, claseId);
-        cstmt.setBigDecimal(13, familiaId);
-        cstmt.setBigDecimal(14, productoId);
-        cstmt.setBigDecimal(15, BigDecimal.ONE);//empresa
-        cstmt.setString(16, us.getUsuario());
-        cstmt.setArray(17, oracleArrayDetalle);
-        cstmt.registerOutParameter(18, OracleTypes.VARCHAR);
-        cstmt.registerOutParameter(19, OracleTypes.BIGINT);
-        cstmt.registerOutParameter(20, OracleTypes.VARCHAR);
+    }
 
-        cstmt.executeQuery();
-        String v_consecutivo = cstmt.getString(18);
-        this.listaInsumo = insumoFacade.listaInsumo();
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se creo el insumo con código "+v_consecutivo));
-        FacesContext.getCurrentInstance().getExternalContext().redirect("/APUGobAtl/home/insumos");
-        return;
+    public long getRandom() {
+        return new Random().nextLong();
     }
-    
-    public void actualizar() throws IOException
-    {
-        FacesContext contextFaces = FacesContext.getCurrentInstance();
-        PgUsuario us = (PgUsuario) contextFaces.getExternalContext().getSessionMap().get("usuario");
-        this.insumo.setUsuariomodificacion(us.getUsuario());
-        this.insumo.setFechamodificacion(new Date());
-        this.insumo.setSegmento(new GeSegmento (segmentoId));
-        this.insumo.setFamilia(new GeFamilia (familiaId) );
-        this.insumo.setClase(new GeClase(claseId));
-        this.insumo.setProducto(new GeProducto(productoId));
-        insumoFacade.actualizarInsumo(insumo);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se actualizo el insumo con código "+insumo.getCodigo()));
-        FacesContext.getCurrentInstance().getExternalContext().redirect("/APUGobAtl/home/insumos");
-        return;
+
+    public void actualizar() {
+
+        try {
+            FacesContext contextFaces = FacesContext.getCurrentInstance();
+            PgUsuario us = (PgUsuario) contextFaces.getExternalContext().getSessionMap().get("usuario");
+            this.insumo.setUsuariomodificacion(us.getUsuario());
+            this.insumo.setFechamodificacion(new Date());
+            this.insumo.setSegmento(new GeSegmento(segmentoId));
+            this.insumo.setFamilia(new GeFamilia(familiaId));
+            this.insumo.setClase(new GeClase(claseId));
+            this.insumo.setProducto(new GeProducto(productoId));
+            insumoFacade.actualizarInsumo(insumo);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se actualizo el insumo con código " + insumo.getCodigo()));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/APUGobAtl/home/insumos");
+
+            return;
+        } catch (IOException ex) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Administrador de APU - IO", "Error en el proceso: <br/> " + ex.getCause().getMessage()));
+        } catch (Exception ex) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Administrador de APU - EX", "Error en el proceso: <br/> " + ex.getCause().getMessage()));
+        }
     }
-            
-    
-    public void crear() throws IOException
-    {
-         try{
+
+    public void crear() throws IOException {
+        try {
             this.insumo.setEmpresa(BigInteger.ONE);//us.getEmpresa().getId());
             FacesContext contextFaces = FacesContext.getCurrentInstance();
             PgUsuario us = (PgUsuario) contextFaces.getExternalContext().getSessionMap().get("usuario");
             this.insumo.setUsuariocreacion(us.getUsuario());
             this.insumo.setFechacreacion(new Date());
             this.insumo.setEstadoregistro(Short.parseShort("1"));
-            this.insumo.setGrupo(new GeGrupo (grupoId));
-            this.insumo.setSubgrupo(new GeSubGrupo (subgrupoId));
-            this.insumo.setUnidadmedida(new GeUnidadMedida (unidadmedidaId));
+            this.insumo.setGrupo(new GeGrupo(grupoId));
+            this.insumo.setSubgrupo(new GeSubGrupo(subgrupoId));
+            this.insumo.setUnidadmedida(new GeUnidadMedida(unidadmedidaId));
             this.insumo.setSegmento(new GeSegmento(segmentoId));
             this.insumo.setCompuesto(compuestoId);
-            this.insumo.setFamilia(new GeFamilia (familiaId) );
+            this.insumo.setFamilia(new GeFamilia(familiaId));
             this.insumo.setClase(new GeClase(claseId));
             this.insumo.setProducto(new GeProducto(productoId));
-            
+
             insumoFacade.crearInsumo(insumo);
             this.listaInsumo = insumoFacade.listaInsumo();
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se creo el insumo general: "+insumo.getNombre()));
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se creo el insumo general: " + insumo.getNombre()));
             FacesContext.getCurrentInstance().getExternalContext().redirect("/APUGobAtl/home/insumos");
-         }catch(Exception e){           
-             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Administrador de APU", "Error al guardar el insumo."));
-             return;
-         }
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Administrador de APU", "Error al guardar el insumo."));
+            return;
+        }
     }
-    
-    public void delete(GeInsumo record){
+
+    public void delete(GeInsumo record) {
         //System.out.println("ingresando a ***delete***");
         record.setUsuariomodificacion(nombreUsuarioLogin);
         record.setFechamodificacion(new Date());
         record.setEstadoregistro(Short.parseShort("0"));
         insumoFacade.eliminarGeInsumo(record);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de PQRSD", "Se borro el motivo general: "+ record.getNombre()));
+        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de PQRSD", "Se borro el motivo general: " + record.getNombre()));
         //context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de PQRSD", "Se borro el motivo general: "+ record.getNombre()));
         //cleanForm();
         this.listaInsumo = insumoFacade.listaInsumo();
     }
-   
+
     public void updateSegmento() {
         for (GeFamilia obj : familiaFacade.listaFamiliaSegmento(segmentoId)) {
             listaFamiliaItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
     }
-    
+
     public void updateFamilia() {
         for (GeClase obj : claseFacade.listaClaseFamilia(familiaId)) {
             listaClaseItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
     }
-    
+
     public void updateClase() {
-        System.out.println("Actualizando producto... "+claseId);
+        System.out.println("Actualizando producto... " + claseId);
         for (GeProducto obj : productoFacade.listaProductoClase(claseId)) {
             listaProductoItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
     }
-    
+
     public void updateClaseProducto(BigDecimal clase) {
         for (GeProducto obj : productoFacade.listaProductoClase(clase)) {
             listaProductoItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
     }
-    
-    public String edit(GeInsumo record) throws IOException
-    {
-        try{
+
+    public String edit(GeInsumo record) throws IOException {
+        try {
             this.insumo = record;
 
             segmentoId = record.getSegmento().getId();
@@ -327,45 +416,53 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
             updateSegmento();
             updateFamilia();
             updateClase();
-            FacesContext.getCurrentInstance().getExternalContext().redirect(path + "/faces/views/insumos/editarInsumo.xhtml");
-        }catch(Exception e){
+            FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("p_insumo", insumo);
+            FacesContext.getCurrentInstance().getExternalContext().redirect(PATH + "/faces/views/insumos/editarInsumo.xhtml");
+        } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Administrador de PQRSD", "Error al intentar editar el insumo."));
         }
-        return "editarInsumo.xhtml";
+        return "";
     }
-    
-    public String viewer(GeInsumo record) throws IOException
-    {
-        try{
+
+    public String viewer(GeInsumo record) throws IOException {
+        try {
             this.insumo = record;
             //idMotivoEdicion = record.getId();
             //System.out.println("ingresando a ***edit***"+idMotivoEdicion);
-            FacesContext.getCurrentInstance().getExternalContext().redirect(path + "/faces/views/insumos/verInsumo.xhtml");
-        }catch(Exception e){
+            FacesContext.getCurrentInstance().getExternalContext().redirect(PATH + "/faces/views/insumos/verInsumo.xhtml");
+        } catch (Exception e) {
             FacesContext context = FacesContext.getCurrentInstance();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Administrador de PQRSD", "Error al intentar editar el insumo."));
         }
         return "verInsumo.xhtml";
     }
-    
-    public void approveInsumo(GeInsumo record){
-        GeInsumo obj = record;
-        obj.setEtapa(new PgEtapa (BigDecimal.valueOf(2L)));
-        insumoFacade.actualizarInsumo(obj);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se autorizo el insumo "+record.getCodigo()));
-        this.listaInsumo = insumoFacade.listaInsumo();
-        
-   }
-   
-   public void cancelInsumo(GeInsumo record){
-        GeInsumo obj = record;
-        obj.setEtapa(new PgEtapa (BigDecimal.valueOf(4L)));
-        insumoFacade.actualizarInsumo(obj);
-        FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se rechazo el insumo "+record.getCodigo()));
-        this.listaInsumo = insumoFacade.listaInsumo();
-   }
-    
+
+    public void approveInsumo(GeInsumo record) {
+        try {
+            GeInsumo obj = record;
+            obj.setEtapa(new PgEtapa(BigDecimal.valueOf(2L)));
+            insumoFacade.actualizarInsumo(obj);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se autorizo el insumo " + record.getCodigo()));
+            this.listaInsumo = insumoFacade.listaInsumo();
+        } catch (Exception ex) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+    public void cancelInsumo(GeInsumo record) {
+        try {
+            GeInsumo obj = record;
+            obj.setEtapa(new PgEtapa(BigDecimal.valueOf(4L)));
+            insumoFacade.actualizarInsumo(obj);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se rechazo el insumo " + record.getCodigo()));
+            this.listaInsumo = insumoFacade.listaInsumo();
+        } catch (Exception ex) {
+            Logger.getLogger(insumoCtrl.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public void subir(FileUploadEvent event) {
         this.filexls = event.getFile();
         this.nombreArchivo = event.getFile().getFileName();
@@ -381,8 +478,9 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
             FacesContext.getCurrentInstance().addMessage(null, msg);
             e.printStackTrace();
         }
-        */
+         */
     }
+
     /*
     public void copyFile(String fileName, InputStream in) {
         try {
@@ -435,31 +533,30 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
             System.out.printf("%s, %s, %s%n", product, price.toString(), link);
         }
     }
-    */
-     
-    public void importarExcel(){
+     */
+    public void importarExcel() {
         System.out.println("Valor de file: ");
-        if (filexls != null){
-            
-            try{
+        if (filexls != null) {
+
+            try {
                 /*
                 InputStream input = getFile().getInputStream();            
                 JavaPoiUtils javaPoiUtils = new JavaPoiUtils();
                 javaPoiUtils.readExcelFile(input);
                 FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
                 FacesContext.getCurrentInstance().addMessage(null, message);
-                */
+                 */
                 InputStream inputStream = filexls.getInputstream();
                 //JavaPoiUtils javaPoiUtils = new JavaPoiUtils();
                 //javaPoiUtils.readExcelFile(inputStream);
-                
+
                 XSSFWorkbook libro = new XSSFWorkbook(inputStream);
                 Sheet sheet = libro.getSheetAt(0);
                 Iterator<Row> iterator = sheet.iterator();
                 int i = 0;
-                while(iterator.hasNext()){
+                while (iterator.hasNext()) {
                     Row currentRow = iterator.next();
-                    if (i > 0){
+                    if (i > 0) {
                         /*
                             GRUPO
                             SUBGRUPO
@@ -472,13 +569,13 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
                             --FAMILIA
                             CLASE
                             PRODUCTO
-                        */
-                        if (currentRow.getCell(0)== null && currentRow.getCell(1) != null 
+                         */
+                        if (currentRow.getCell(0) == null && currentRow.getCell(1) != null
                                 && currentRow.getCell(1) != null && currentRow.getCell(2) != null
                                 && currentRow.getCell(3) != null && currentRow.getCell(4) != null
                                 && currentRow.getCell(5) != null && currentRow.getCell(6) != null
-                                && currentRow.getCell(7) != null && currentRow.getCell(8) != null){
-                            
+                                && currentRow.getCell(7) != null && currentRow.getCell(8) != null) {
+
                             BigDecimal grupo;
                             BigDecimal subGrupo;
                             BigDecimal unidadMedida;
@@ -487,61 +584,76 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
                             int familia;
                             BigDecimal clase;
                             BigDecimal producto;
-                            
+
                             grupo = new BigDecimal(currentRow.getCell(0).getNumericCellValue());
                             subGrupo = new BigDecimal(currentRow.getCell(1).getNumericCellValue());
                             unidadMedida = new BigDecimal(currentRow.getCell(3).getNumericCellValue());
                             precio = new BigDecimal(currentRow.getCell(5).getNumericCellValue());
                             clase = new BigDecimal(currentRow.getCell(6).getStringCellValue());
                             producto = new BigDecimal(currentRow.getCell(7).getNumericCellValue());
-                            
-                            insumo.setGrupo(new GeGrupo (grupo));
-                            insumo.setSubgrupo(new GeSubGrupo (subGrupo));
+
+                            insumo.setGrupo(new GeGrupo(grupo));
+                            insumo.setSubgrupo(new GeSubGrupo(subGrupo));
                             insumo.setNombre(currentRow.getCell(2).getStringCellValue());
-                            insumo.setUnidadmedida(new GeUnidadMedida (unidadMedida));
+                            insumo.setUnidadmedida(new GeUnidadMedida(unidadMedida));
                             insumo.setCompuesto(currentRow.getCell(4).getStringCellValue().charAt(0));
                             insumo.setPrecio(precio);
-                            insumo.setClase(new GeClase (clase));
+                            insumo.setClase(new GeClase(clase));
                             insumo.setProducto(new GeProducto(producto));
                             insumoFacade.crearInsumo(insumo);
-                        }else{
+                        } else {
                             break;
                         }
                     }
                     i++;
                 }
-                
+
                 //libro.close();
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Administrador de APU", "Se cargo el archivo exitosamente."));
                 return;
-            }catch(Exception e){           
+            } catch (Exception e) {
                 FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Error:Arhivo con datos erroneos."));
                 return;
             }
-        
-        }else{
+
+        } else {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_FATAL, "Administrador de APU", "Error al cargar archivo."));
-                return;
-        
+            return;
+
         }
-        
-        
+
     }
-    
+
     public insumoCtrl() {
-        
 
     }
 
-    
     @PostConstruct
     public void init() {
-       listaInsumo = insumoFacade.listaInsumo();
-       nameFile = "Insumo" + now();
-       
+        Object temp = FacesContext.getCurrentInstance().getExternalContext().getSessionMap().get("p_insumo");
+        insumo = new GeInsumo();
+        if (temp != null) {
+            insumo = (GeInsumo) temp;
+            segmentoId = insumo.getSegmento().getId();
+            familiaId = insumo.getFamilia().getId();
+            claseId = insumo.getClase().getId();
+            productoId = insumo.getProducto().getId();
+            updateSegmento();
+            updateFamilia();
+            updateClase();
+            listaInsumo = insumoFacade.listaInsumo();
+            nameFile = "Insumo" + now();
+        } else {
+            listaInsumo = insumoFacade.listaInsumo();
+            nameFile = "Insumo" + now();
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(
+                    FacesMessage.SEVERITY_WARN, "Administrador de APU",
+                    "Arvertencia : Insumo no encontrado."));
+        }
+
     }
-    
-    public String goCreate() throws IOException{
+
+    public String goCreate() throws IOException {
         //System.out.println("ingresando a ***goCreate***");
         insumo = new GeInsumo();
         subgrupo = new GeSubGrupo();
@@ -553,52 +665,49 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
         listaInsumoDetalle.clear();
         return "crearInsumo.xhtml?faces-redirect=true";
     }
-    
-    public String goImport() throws IOException{
+
+    public String goImport() throws IOException {
         //System.out.println("ingresando a ***goCreate***");
         insumo = new GeInsumo();
         subgrupo = new GeSubGrupo();
         //FacesContext.getCurrentInstance().getExternalContext().redirect(path + "/faces/views/motivo/crear.xhtml");
         return "importarInsumo.xhtml?faces-redirect=true";
     }
-    
-    public void listarInsumoUNSPSC(){
-       //System.out.println("listaInsumoSearch "+  this.unspsc);
-       //if (this.listaInsumoSearch.size()!=0)
-       this.listaInsumoSearch2.clear();
-       this.listaInsumoSearch2 = insumoFacade.listaInsumoSearch(this.txtSearch);
+
+    public void listarInsumoUNSPSC() {
+        //System.out.println("listaInsumoSearch "+  this.unspsc);
+        //if (this.listaInsumoSearch.size()!=0)
+        this.listaInsumoSearch2.clear();
+        this.listaInsumoSearch2 = insumoFacade.listaInsumoSearch(this.txtSearch);
     }
-    
-    public void limpiarSearch(){
-   
-       this.listaInsumoSearch2.clear();
-       this.txtSearch = "";
+
+    public void limpiarSearch() {
+
+        this.listaInsumoSearch2.clear();
+        this.txtSearch = "";
     }
-    
-    public void addDetalle(GeInsumo record)
-    {
-         this.listaInsumoDetalle.add(record);
+
+    public void addDetalle(GeInsumo record) {
+        this.listaInsumoDetalle.add(record);
     }
-    
-    public void deleteDetalle(GeInsumo record)
-    {
+
+    public void deleteDetalle(GeInsumo record) {
         this.listaInsumoDetalle.remove(record);
     }
-    
+
     public void onCellEdit(CellEditEvent event) {
         Object oldValue = event.getOldValue();
         Object newValue = event.getNewValue();
-        if (this.listaInsumoDetalle.get(event.getRowIndex()).getCantidad() != null){
+        if (this.listaInsumoDetalle.get(event.getRowIndex()).getCantidad() != null) {
             this.listaInsumoDetalle.get(event.getRowIndex())
                     .setSubtotal(this.listaInsumoDetalle.get(event.getRowIndex()).getPrecio()
                             .multiply(BigDecimal.valueOf(this.listaInsumoDetalle.get(event.getRowIndex()).getCantidad())));
-        }else{
+        } else {
             this.listaInsumoDetalle.get(event.getRowIndex()).setSubtotal(BigDecimal.ZERO);
         }
-        System.out.println("valor subtotal "+this.listaInsumoDetalle.get(event.getRowIndex()).getSubtotal());
+        System.out.println("valor subtotal " + this.listaInsumoDetalle.get(event.getRowIndex()).getSubtotal());
 
     }
-    
 
     public BigDecimal getSegmentoId() {
         return segmentoId;
@@ -641,11 +750,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     }
 
     public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
+        return PATH;
     }
 
     public String getNameFile() {
@@ -687,9 +792,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     public void setListaInsumoSearch2(List<GeInsumo> listaInsumoSearch2) {
         this.listaInsumoSearch2 = listaInsumoSearch2;
     }
-    
-    
-    
+
     public ArrayList<SelectItem> getListaSegmentoItem() {
         listaSegmentoItem = new ArrayList<SelectItem>();
         List a = segmentoFacade.listaSegmento();
@@ -697,7 +800,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
             listaSegmentoItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
         return listaSegmentoItem;
-        
+
     }
 
     public void setListaSegmentoItem(ArrayList<SelectItem> listaSegmentoItem) {
@@ -710,7 +813,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
         for (GeFamilia obj : familiaFacade.listaFamiliaSegmento(segmentoId)) {
             listaFamiliaItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
-   
+
         return listaFamiliaItem;
     }
 
@@ -719,7 +822,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     }
 
     public ArrayList<SelectItem> getListaClaseItem() {
-         listaClaseItem = new ArrayList<SelectItem>();
+        listaClaseItem = new ArrayList<SelectItem>();
         List a = claseFacade.listaClase();
         for (GeClase obj : claseFacade.listaClaseFamilia(familiaId)) {
             listaClaseItem.add(new SelectItem(obj.getId(), obj.getNombre()));
@@ -739,7 +842,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
         }
         return listaProductoItem;
     }
-    
+
     public void setListaProductoItem(ArrayList<SelectItem> listaProductoItem) {
         this.listaProductoItem = listaProductoItem;
     }
@@ -782,7 +885,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     public void setListaUnidadMedidaItem(ArrayList<SelectItem> listaUnidadMedidaItem) {
         this.listaUnidadMedidaItem = listaUnidadMedidaItem;
     }
-    
+
     public GeInsumo getInsumo() {
         return insumo;
     }
@@ -854,8 +957,5 @@ public class insumoCtrl extends BaseController implements java.io.Serializable{
     public void setNombreArchivo(String nombreArchivo) {
         this.nombreArchivo = nombreArchivo;
     }
-    
-
-    
 
 }
