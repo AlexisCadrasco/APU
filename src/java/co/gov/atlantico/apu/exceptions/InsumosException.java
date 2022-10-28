@@ -60,13 +60,13 @@ public class InsumosException extends Exception {
     public String getTitle() {
         switch (getNivel()) {
             case 1: {
-                return "Infromación";
+                return "Infromación.";
             }
             case 2: {
-                return "Advertencia";
+                return "Advertencia.";
             }
             default: {
-                return "Alerte";
+                return "Alerta.";
             }
         }
     }

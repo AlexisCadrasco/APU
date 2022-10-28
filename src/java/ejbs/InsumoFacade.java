@@ -131,7 +131,7 @@ public class InsumoFacade extends AbstractFacade<GeInsumo> {
         //em.getTransaction().commit();
     }
 
-    public boolean eliminarGeInsumo(GeInsumo GeInsumo) {
+    public boolean eliminarGeInsumo(GeInsumo GeInsumo)throws Exception{
         Short a = 0;
         GeInsumo.setEstadoregistro(a);
         em.merge(GeInsumo);

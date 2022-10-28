@@ -6,6 +6,7 @@
       xmlns:p="http://primefaces.org/ui"
       xmlns:f="http://java.sun.com/jsf/core"
       xmlns:c="http://java.sun.com/jsp/jstl/core">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <body>
         <ui:composition template="./../../templates/generic.xhtml">
             <f:event type="preRenderView" listener="#{insumoCtrl.verificarSesion()}"></f:event>
@@ -43,8 +44,11 @@
                             </div>
                             <div class="col-md-1">
                                 <span class="input-group-btn">
-                                    <p:commandButton id="buscar" tabindex="-1" styleClass="btn btn-blue" label="Buscar"
-                                                     update="tbl grow" value="Buscar" actionListener="#{insumoCtrl.search(insumoCtrl.txtSearch)}" />
+                                    <p:commandButton id="buscar" 
+                                                     tabindex="-1" styleClass="btn btn-blue" label="Buscar"
+                                                     update="tbl grow" 
+                                                     value="Buscar"
+                                                     actionListener="#{insumoCtrl.search(insumoCtrl.txtSearch)}" />
                                 </span>
                             </div>
                         </div>
@@ -74,14 +78,29 @@
                                         <h:outputText value="#{record.etapa.nombre}" /> 
                                     </p:column>
                                     <p:column exportable="false" headerText="Acción" width="10%">
-                                        <p:commandButton id="id${insumoCtrl.random}" styleClass="btn-edit" value="${record.id}"  alt="Editar" title="Editar" >
-                                            <p:ajax event="click" listener="#{insumoCtrl.edit(record)}" process="@this" />
+                                        <p:commandLink class="btn btn-edit" value="&nbsp;&nbsp;&nbsp;" 
+                                                       actionListener="#{insumoCtrl.edit(record)}"  title="Editar" ajax="true" >
+
+                                        </p:commandLink>
+                                        <p:commandButton   class="btn btn-delete" value="" update="tbl grow" 
+                                                           alt="Eliminar" label="Eliminar" title="Eliminar" 
+                                                           action="#{insumoCtrl.delete(record)}">
+                                            <p:confirm  header="#{record.nombre}" 
+                                                        message="está seguro que desea eliminar el registro?"
+                                                        icon="fa fa-exclamation-triangle"/>
                                         </p:commandButton>
-                                        <p:commandButton styleClass="btn-delete" value="" update="tbl" alt="Eliminar" label="Eliminar" title="Eliminar" action="#{insumoCtrl.delete(record)}"/>
-                                        <p:commandButton  styleClass="btn-viewer" value="" update="tbl" alt="Ver" label="Ver" title="Ver" action="#{insumoCtrl.viewer(record)}"/>
+
+
+                                        <p:commandButton  styleClass="btn btn-viewer" value="" update="tbl" 
+                                                          alt="Ver" label="Ver" title="Ver"
+                                                          action="#{insumoCtrl.viewer(record)}"/>
                                     </p:column>
                                 </p:dataTable>
                             </div>
+                            <p:confirmDialog global="true" showEffect="fade" hideEffect="fade" responsive="true" width="350">
+                                <p:commandButton value="Cancelar" type="button" styleClass="ui-confirmdialog-no" style="background-color: red;color: #ffffff"/>
+                                <p:commandButton value="Confirmar" type="button" styleClass="ui-confirmdialog-yes" style="background-color: #007ad9;color: #ffffff" />
+                            </p:confirmDialog>
                         </div>
                     </h:form>
                 </div>

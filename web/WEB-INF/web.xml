@@ -12,24 +12,25 @@
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
     </filter>
-
+    <filter>
+        <description>do it!</description>
+        <filter-name>resquetFilter</filter-name>
+        <filter-class>co.gov.atlantico.apu.filter.CharacterEncodingFilter</filter-class>
+    </filter>
     <filter-mapping>
         <filter-name>PrimeFaces FileUpload Filter</filter-name>
         <servlet-name>Faces Servlet</servlet-name>
         <dispatcher>FORWARD</dispatcher>
     </filter-mapping>
-
     <servlet-mapping>
         <servlet-name>Faces Servlet</servlet-name>
         <url-pattern>/faces/*</url-pattern>
     </servlet-mapping>
-    
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
         <servlet-class>javax.faces.webapp.FacesServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
-
     <session-config>
         <session-timeout>
             30
