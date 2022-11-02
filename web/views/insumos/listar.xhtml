@@ -38,12 +38,15 @@
                             <div class="col-md-2"></div>
                             <div class="col-lg-6">
                                 <div class="input-group">
-                                    <p:inputText id="txtSearch" styleClass="form-control form-buscar" value="#{insumoCtrl.txtSearch}" style="margin-top: 8px !important;" placeholder="Buscar"></p:inputText>
+                                    <p:inputText id="txtSearch" styleClass="form-control form-buscar" value="#{insumoCtrl.txtSearch}" style="margin-top: 8px !important;" placeholder="Buscar">
+                                        
+                                    </p:inputText>
 
                                 </div>
                             </div>
                             <div class="col-md-1">
                                 <span class="input-group-btn">
+                                    <p:defaultCommand target="buscar" />
                                     <p:commandButton id="buscar" 
                                                      tabindex="-1" styleClass="btn btn-blue" label="Buscar"
                                                      update="tbl grow" 

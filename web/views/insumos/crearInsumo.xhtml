@@ -47,7 +47,7 @@
                                                       validator="validator.view.insumos.nombre"
                                                       styleClass="input-name" disabled="false" value= "#{insumoCtrl.insumo.nombre}" 
                                                       placeholder="Nombre para insumo">
-                                            <p:ajax event="blur" update="growl nombre" />
+                                            <!--<p:ajax event="blur" update="growl nombre" />-->
                                         </p:inputText>
                                     </div>
                                     <div class="col-md-3">
@@ -75,7 +75,7 @@
                                         <p:outputLabel for="precio" value="Precio" styleClass="text-title-front"/>
                                         <p:inputNumber id="precio" validator="validator.view.insumos.precio" minValue="0" styleClass="input-number" disabled="false" 
                                                        value= "#{insumoCtrl.insumo.precio}"  placeholder="Ingrese el precio">
-                                            <p:ajax event="blur" update="precio growl" />
+                                            <!--<p:ajax event="blur" update="precio growl" />-->
                                         </p:inputNumber>
                                     </div>
                                 </div>
@@ -85,7 +85,7 @@
                                         <p:inputTextarea id="descripcion" rows="3" validator="validator.view.insumos.descripcion" value="#{insumoCtrl.insumo.descripcion}" 
                                                          requiredMessage="Debe ingresar una descripción para el insumo" 
                                                          styleClass="input-name" placeholder="Agregue descripción de insumo">
-                                            <p:ajax event="blur" update="growl descripcion" />
+                                           <!-- <p:ajax event="blur" update="growl descripcion" />-->
                                         </p:inputTextarea>
                                     </div>
                                 </div>
@@ -228,9 +228,9 @@
                             </div>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p:commandButton id="save" disabled="false" styleClass="btn btn-blue" 
-                                                     update="@form" value="Almacenar" 
-                                                     ajax="true" actionListener="#{insumoCtrl.crearDb()}" />
+                                    <p:commandButton id="save" disabled="false" styleClass="btn btn-blue" update="@form" value="Almacenar">
+                                        <p:ajax event="click" oncomplete="PF('statusDialog').hide();"  listener="#{insumoCtrl.crearDb()}" />
+                                    </p:commandButton>
                                 </div>
                             </div>
                         </h:form>

@@ -25,7 +25,8 @@
         </c:if>
         
         <p:ajaxStatus style="z-index: 5000;" onstart="PF('statusDialog').show()"  
-                      onsuccess="PF('statusDialog').hide();" 
+                      onsuccess="PF('statusDialog').hide();"
+                      oncomplete="PF('statusDialog').hide();"
                       onerror="window.location.replace('#{request.contextPath}/home')"/>
 
         <p:dialog widgetVar="statusDialog" modal="true" draggable="false" closable="false" resizable="false" showHeader="false" >
