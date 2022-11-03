@@ -11,16 +11,18 @@ import ejbs.ApuDetalleFacade;
 import ejbs.InsumoFacade;
 import ejbs.TipoApuFacade;
 import ejbs.UnidadMedidaFacade;
+import entities.GeClase;
+import entities.GeFamilia;
 import entities.IfApuMaestro;
 import entities.IfApuDetalle;
 import entities.GeInsumo;
+import entities.GeProducto;
+import entities.GeSegmento;
 import entities.IfTipoApu;
 import entities.GeUnidadMedida;
 import entities.PgEtapa;
 import entities.PgUsuario;
 import java.io.IOException;
-import java.io.Serializable;
-import static java.lang.System.exit;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.CallableStatement;
@@ -39,13 +41,10 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
 import javax.faces.bean.SessionScoped;
-import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 import javax.faces.model.SelectItem;
 import javax.sql.DataSource;
-import static net.sf.dynamicreports.report.builder.expression.Expressions.dataSource;
 import oracle.jdbc.OracleTypes;
 import oracle.sql.ARRAY;
 import oracle.sql.ArrayDescriptor;
@@ -212,7 +211,6 @@ public class apuCtrl implements java.io.Serializable {
                 //DESCRIPCION         VARCHAR2(2048),
                 //EMPRESA             NUMBER
 
-
                 objDetalle = new Object[12];
 
                 objDetalle[0] = apuMaestro.getId();
@@ -248,7 +246,6 @@ public class apuCtrl implements java.io.Serializable {
             //P_CONSECUTIVO
             //Error_Num
             //Error_Msg
-            
             cstmt.setString(1, apuMaestro.getNombre());
             cstmt.setString(2, apuMaestro.getDescripcion());
             cstmt.setInt(3, 1);
@@ -266,6 +263,12 @@ public class apuCtrl implements java.io.Serializable {
             String codigoResult = cstmt.getString(9);
             BigDecimal num_error = cstmt.getBigDecimal(10);
             String msgResult = cstmt.getString(11);
+
+            if (msgResult != null) {
+                if (!msgResult.isEmpty()) {
+                    throw new ApuException("Algo no fue bien: " + msgResult, 3);
+                }
+            }
 
             this.listIfApuMaestro = apuMaestroFacade.listaApuMaestro();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se creo el APU con código " + codigoResult));
@@ -535,6 +538,27 @@ public class apuCtrl implements java.io.Serializable {
             listaUnidadMedidaItem.add(new SelectItem(obj.getId(), obj.getNombre()));
         }
         return listaUnidadMedidaItem;
+    }
+
+    public void actualizar() {
+
+        try {
+            FacesContext contextFaces = FacesContext.getCurrentInstance();
+            PgUsuario us = (PgUsuario) contextFaces.getExternalContext().getSessionMap().get("usuario");
+            this.apuMaestro.setUsuariomodificacion(us.getUsuario());
+            this.apuMaestro.setFechamodificacion(new Date());
+            apuMaestroFacade.actualizarApuMaestro(apuMaestro);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Administrador de APU", "Se actualizo el APU con Consecutivo 8" + apuMaestro.getConsecutivo()));
+            FacesContext.getCurrentInstance().getExternalContext().redirect("/APUGobAtl/home/apu");
+
+            return;
+        } catch (IOException ex) {
+            Logger.getLogger(apuCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Administrador de APU - IO", "Error en el proceso: <br/> " + ex.getCause().getMessage()));
+        } catch (Exception ex) {
+            Logger.getLogger(apuCtrl.class.getName()).log(Level.SEVERE, null, ex);
+            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Administrador de APU - EX", "Error en el proceso: <br/> " + ex.getCause().getMessage()));
+        }
     }
 
     public void setListaUnidadMedidaItem(ArrayList<SelectItem> listaUnidadMedidaItem) {

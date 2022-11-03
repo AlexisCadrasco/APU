@@ -60,13 +60,13 @@ public class ApuException extends Exception {
     public String getTitle() {
         switch (getNivel()) {
             case 1: {
-                return "Infromación";
+                return "Infromación.";
             }
             case 2: {
-                return "Advertencia";
+                return "Advertencia.";
             }
             default: {
-                return "Alerte";
+                return "Alerta.";
             }
         }
     }
@@ -92,7 +92,7 @@ public class ApuException extends Exception {
             case 2:
                 return super.getMessage(); //To change body of generated methods, choose Tools | Templates.
             default:
-                return "Error: " + super.getMessage(); //To change body of generated methods, choose Tools | Templates.
+                return "> " + super.getMessage(); //To change body of generated methods, choose Tools | Templates.
         }
     }
 }

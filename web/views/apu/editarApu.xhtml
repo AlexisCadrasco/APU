@@ -26,11 +26,18 @@
                                 <div class="row">
                                      <div class="col-md-4">
                                         <p:outputLabel for="tipoApu" value="Tipo" styleClass="text-title-front"/>
-                                        <p:selectOneMenu id="tipoApu" required="false" requiredMessage="Ingrese tipo de APU" 
+                                        <p:selectOneMenu disabled="true" id="tipoApu" required="false" requiredMessage="Ingrese tipo de APU" 
                                                          autoWidth="false"  value="#{apuCtrl.apuMaestro.tipo.id}" styleClass="input-name">  
                                             <f:selectItem itemLabel="Seleccione un tipo de APU" itemValue="-1"/>
                                             <f:selectItems id="selectItemTipoApu" value="#{apuCtrl.listaTipoApuItem}" />  
                                         </p:selectOneMenu>
+                                    </div>
+                                      <div class="col-md-4">
+                                        <p:outputLabel for="consecutivo" value="Consecutivo" styleClass="text-title-front"/>
+                                        <p:inputText  id="consecutivo" required="true" requiredMessage="Ingrese un nombre para el APU" 
+                                                      styleClass="input-name" disabled="true" value= "#{apuCtrl.apuMaestro.consecutivo}" 
+                                                     placeholder="Nombre para APU">
+                                        </p:inputText>
                                     </div>
                                       <div class="col-md-4">
                                         <p:outputLabel for="nombre" value="Nombre para el APU" styleClass="text-title-front"/>
@@ -40,8 +47,8 @@
                                         </p:inputText>
                                     </div>
                                     <div class="col-md-4">
-                                        <p:outputLabel for="medida" value="Tipo" styleClass="text-title-front"/>
-                                        <p:selectOneMenu id="medida" required="false" requiredMessage="Ingrese unidad de medida" 
+                                        <p:outputLabel for="medida" value="Unidad de Medida" styleClass="text-title-front"/>
+                                        <p:selectOneMenu disabled="true" id="medida" required="false" requiredMessage="Ingrese unidad de medida" 
                                                          autoWidth="false"  value="#{apuCtrl.apuMaestro.unidadmedida.id}" styleClass="input-name">  
                                             <f:selectItem itemLabel="Seleccione una Unidad de medida" itemValue="-1"/>
                                             <f:selectItems id="selectItemTipoVisitante" value="#{apuCtrl.listaUnidadMedidaItem}" />  
@@ -60,7 +67,7 @@
                           
                             <!--INSUMOS -->
                             <p:fieldset id="panelDetalle" legend="DETALLE DE INSUMOS DEL APU" styleClass="">
-                                <p:panel id="busqueda" header="Búsqueda de INSUMOS" >
+                                <p:panel rendered="false" id="busqueda" header="Búsqueda de INSUMOS" >
                                     <div class="row">
                                         <div class="col-md-8">
                                             <p:inputText  id="unspsc" required="true" requiredMessage="Ingrese código UNSPSC" 
@@ -94,30 +101,30 @@
                                 <p:panel id="proyectado" header="INSUMOS QUE SE ADICIONARÁN AL APU">
                                     <div class="row">
                                         <div class="col-md-12">
-                                            <p:dataTable id="tblInsumo" editable="true" rowHover="false" var="record" value="#{apuCtrl.listaInsumoApu}" reflow="true" editMode="cell" rows="10" paginator="false" emptyMessage="No hay Valores">                                    
+                                            <p:dataTable id="tblInsumo" editable="true" rowHover="false" var="record" value="#{apuCtrl.apuMaestro.ifApuDetalleList}" reflow="true" editMode="cell" rows="10" paginator="false" emptyMessage="No hay Valores">                                    
                                                     <p:ajax event="cellEdit" listener="#{apuCtrl.totalizador(record.precio, record.cantidad)}" update="subtotal" />
                                                     <p:ajax event="rowEditCancel" listener="#{apuCtrl.onRowCancel}" update="@form" />
 
-                                                    <p:column headerText="Código Interno" width="10%"> <h:outputText value="#{record.codigointerno}"/> </p:column>
-                                                    <p:column headerText="Nombre insumo" width="40%"> <h:outputText value="#{record.nombre}"/> </p:column>
-                                                    <p:column headerText="Unidad de medida" width="10%"> <h:outputText value="#{record.unidadmedida.descripcion}"/> </p:column>
-                                                    <p:column headerText="Valor" id="valor" width="10%" style="text-align: right;" ><h:outputText value="#{record.precio}"><f:convertNumber currencySymbol="$" type="currency" /></h:outputText> </p:column>
+                                                    <p:column headerText="Código Interno" width="10%"> <h:outputText value="#{record.insumo.codigo}"/> </p:column>
+                                                    <p:column headerText="Nombre insumo" width="40%"> <h:outputText value="#{record.insumo.nombre}"/> </p:column>
+                                                    <p:column headerText="Unidad de medida" width="10%"> <h:outputText value="#{record.insumo.unidadmedida.nombre}"/> </p:column>
+                                                    <p:column headerText="Valor" id="valor" width="10%" style="text-align: right;" ><h:outputText value="#{record.insumo.precio}"><f:convertNumber currencySymbol="$" type="currency" /></h:outputText> </p:column>
                                                     <p:column id="pcantidad" headerText="Cantidad" width="10%" style="text-align: right;">
                                                         <p:cellEditor>
-                                                            <f:facet name="output"><h:outputText value="#{record.cantidad}" /></f:facet>
-                                                            <f:facet name="input" ><h:inputText id="cantidad" value="#{record.cantidad}" />
+                                                            <f:facet name="output"><h:outputText value="#{record.insumo.cantidad}" /></f:facet>
+                                                            <f:facet name="input" ><h:inputText id="cantidad" value="#{record.insumo.cantidad}" />
                                                             </f:facet>
                                                         </p:cellEditor>
                                                     </p:column>
                                                     <p:summaryRow></p:summaryRow>
                                                     
                                                     <p:column headerText="Total" width="10%"  style="text-align: right;"> 
-                                                        <h:outputText id="subtotal" value="#{apuCtrl.valorTotal}">
+                                                        <h:outputText id="subtotal" value="#{record.insumo.precio * record.insumo.cantidad}">
                                                             <f:convertNumber currencySymbol="$" type="currency" />
                                                         </h:outputText> 
                                                     </p:column>
        
-                                                    <p:column exportable="false" headerText="Acción" width="5%">
+                                                    <p:column  rendered="false" exportable="false" headerText="Acción" width="5%">
                                                         <p:commandButton id="btndelete" styleClass="btn-delete" value="" process="@this,tblInsumo" update="tblInsumo" action="#{apuCtrl.delete(record)}"/>
                                                     </p:column>
                                                 </p:dataTable>
@@ -128,7 +135,7 @@
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
-                                    <p:commandButton id="save"  disabled="" styleClass="btn btn-blue" update="tblVisitante" value="Almacenar" ajax="false" actionListener="#" />
+                                    <p:commandButton id="save"  disabled="" styleClass="btn btn-blue" update="tblVisitante" value="Almacenar" ajax="false" actionListener="#{apuCtrl.actualizar()}" />
                                 </div>      
                             </div>   
                         </h:form>
