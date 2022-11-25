@@ -144,12 +144,21 @@ public class LoginCtrl extends BaseController implements java.io.Serializable {
             String passwordCifrado = DigestUtils.md5Hex(passwordNuevo1);
             
             record.setPassword(passwordCifrado);
-            record.setUsuariomodificacion(nombreUsuarioLogin);
+            record.setUsuariomodificacion(this.usuario);
             record.setFechamodificacion(new Date());
+            
             UsuarioFacade.actualizarPgUsuario(record);
+            PgUsuario tus = UsuarioFacade.findRegistroUsuarioByID(id);
+            
+            if(!tus.getPassword().equals(passwordCifrado)){
+                FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Validación", "La contraseña fue cambiada con exito"));
+                
+            }
+            
+            
             cleanFormChangePassword();
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Validación", "La contraseña fue cambiada con exito"));
-            logout();
+            logout();/*Colocar en mesaje de cambio de contraseña*/
             return;
         }
     }

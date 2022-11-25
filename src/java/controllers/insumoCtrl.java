@@ -60,7 +60,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.primefaces.event.CellEditEvent;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 
 /**
  *
@@ -561,7 +561,7 @@ public class insumoCtrl extends BaseController implements java.io.Serializable {
                 FacesMessage message = new FacesMessage("Successful", file.getFileName() + " is uploaded.");
                 FacesContext.getCurrentInstance().addMessage(null, message);
                  */
-                InputStream inputStream = filexls.getInputstream();
+                InputStream inputStream = filexls.getInputStream();
                 //JavaPoiUtils javaPoiUtils = new JavaPoiUtils();
                 //javaPoiUtils.readExcelFile(inputStream);
 

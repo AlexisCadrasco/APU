@@ -17,8 +17,9 @@
                 </div>
                 <div class="container-fluid col-md-12" >    
                     <section class="container-fluid content-section" id="crearApu">
-                        <h:form id="formCrearAPU">
 
+                        <h:form id="formCrearAPU">
+                            <p:growl id="growl" showDetail="true" showSummary="true" sticky="true" />
                             <p:fieldset id="panelGeneral" legend="INFORMACIÓN GENERAL DEL APU" styleClass="">
                                 <div class="row">
                                     <div class="col-md-4">
@@ -54,6 +55,94 @@
                                         </p:selectOneMenu>
                                     </div>
                                 </div>
+                                <div class="col-12">
+                                    <p:dialog modal="true" header="Adicionar Insumo" widgetVar="dlg3" class="col-8" height="300" showEffect="fade">
+                                        <p:growl id="grow" showDetail="true" sticky="true" />
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-lg-6">
+                                                <div class="input-group">
+                                                    <p:inputText id="txtSearch" styleClass="form-control form-buscar" value="#{insumoCtrl.txtSearch}" style="margin-top: 8px !important;" placeholder="Buscar">
+
+                                                    </p:inputText>
+
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <span class="input-group-btn">
+                                                    <p:commandButton id="cmbttnbuscar" 
+                                                                     tabindex="-1" styleClass="btn btn-blue" 
+                                                                     value="Buscar" ajax="true" 
+                                                                     actionListener="#{insumoCtrl.search(insumoCtrl.txtSearch)}"
+                                                                     update="tbl"
+                                                                     >
+
+                                                    </p:commandButton>
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-12">
+                                                <p:dataTable id="tbl" var="record" value="#{insumoCtrl.listaInsumo}"  
+                                                             styleClass="customers"  rows="5" paginator="true" widgetVar="insumoTable" 
+                                                             emptyMessage="No hay Valores">
+                                                    <p:column headerText="Código" width="10%"  sortBy="#{record.codigo}"> 
+                                                        <h:outputText value="#{record.codigo}" /> </p:column>
+                                                    <p:column headerText="Grupo" width="10%" sortBy="#{record.grupo.nombre}"> 
+                                                        <h:outputText value="#{record.grupo.nombre}"/> </p:column>
+                                                    <p:column headerText="Nombre" width="20%" sortBy="#{record.nombre}"> 
+                                                        <h:outputText value="#{record.nombre}"/> </p:column>
+                                                    <p:column headerText="Precio" width="10%" style="text-align: right"  sortBy="#{record.precio}"> <h:outputText value="#{record.precio}"><f:convertNumber currencySymbol="$" type="currency" /></h:outputText></p:column>
+                                                    <p:column headerText="Estado" width="10%"  sortBy="#{record.etapa.nombre}"> 
+                                                        <h:outputText value="#{record.etapa.nombre}" /> 
+                                                    </p:column>
+                                                    <p:column exportable="false" headerText="Acción" width="10%">
+                                                        <p:commandLink  id="btnadd" class="rounded-button" 
+                                                                        value="" update="tbl" 
+                                                                        title="Ver" ajax="true"
+                                                                        action="#{apuCtrl.selectedInsumo(record)}"
+                                                                        oncomplete="PF('dlg3').hide();PF('dlg').show()"
+                                                                        >
+                                                            <i class="pi pi-forward" />
+                                                        </p:commandLink>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </div>
+                                        </div>
+                                        <f:facet name="footer">
+                                            <p:commandButton type="button" value="No" styleClass="ui-button-flat mr-2" style="width: 6rem" />
+                                            <p:commandButton type="button" value="Yes" style="width: 5rem" />
+                                        </f:facet>
+                                    </p:dialog>
+
+                                    <p:dialog modal="true" header="Asigar Grupo" widgetVar="dlg" class="col-md-3" height="100" showEffect="fade">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="col-md-1"/>
+                                                <div class="col-md-2">
+                                                    <p:selectOneMenu value="#{apuCtrl.cap}" class="form-control" id="menuOne" >
+                                                        <f:selectItem class="form-row" itemValue="1" itemLabel="I. EQUIPOS" />
+                                                        <f:selectItem class="form-row" itemValue="2" itemLabel="II. MATERIALES" />
+                                                        <f:selectItem class="form-row" itemValue="3" itemLabel="III. TRANSPORTE" />
+                                                        <f:selectItem class="form-row" itemValue="4" itemLabel="IV. MANO DE OBRA" />
+                                                    </p:selectOneMenu>
+                                                </div>
+
+                                                <div class="col-md-2">
+                                                    <p:commandLink  id="btnaddUn" class="btn btn-blue rounded-button form-control-sm" 
+                                                                    value="Agregar" update="panelDetalle" 
+                                                                    title="Ver" ajax="true"
+                                                                    action="#{apuCtrl.addInsumoList(apuCtrl.cap)}"
+                                                                    oncomplete="PF('dlg3').hide();PF('dlg').hide()"
+                                                                    >
+                                                        <i class="pi pi-forward" />
+                                                    </p:commandLink>
+                                                </div>
+                                                <div class="col-md-1"/>
+                                            </div>
+                                        </div>
+                                    </p:dialog>
+                                </div>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <p:outputLabel for="descripcion" value="Descripción del APU" styleClass="text-title-front"/>
@@ -61,100 +150,274 @@
                                         </p:inputTextarea>
                                     </div>
                                 </div>
-
                             </p:fieldset>
-
                             <!--INSUMOS -->
                             <p:fieldset id="panelDetalle" legend="DETALLE DE INSUMOS DEL APU" styleClass="">
-                                <p:panel id="busqueda" header="Búsqueda de INSUMOS" >
-                                    <div class="row">
-                                        <div class="col-md-8">
-                                            <p:inputText  id="unspsc" required="false" requiredMessage="Ingrese código UNSPSC" 
-                                                          styleClass="input-name" disabled="false" value= "#{apuCtrl.unspsc}" 
-                                                          placeholder="Busqueda de insumo">
-                                            </p:inputText>
-                                        </div>
-
-                                        <div class="col-md-2">
-                                            <p:commandButton id="buscarUnspsc" process="@this,unspsc" styleClass="btn btn-blue" update="tblInsumoTemporal" value="Buscar" actionListener="#{apuCtrl.listarInsumoUNSPSC()}"></p:commandButton>  
-                                        </div>
-                                        <div class="col-md-2">
-                                            <p:commandButton id="bclear" process="@this,unspsc" styleClass="btn btn-red" update="tblInsumoTemporal, unspsc" value="Limpiar" actionListener="#{apuCtrl.limpiarSearch()}" />
-                                        </div>
+                                <div class="row">
+                                    <div class="col-10">
                                     </div>
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <p:dataTable id="tblInsumoTemporal" style="custormers" editable="true" rowHover="true" 
-                                                         var="record1" editMode="cell" value="#{apuCtrl.listaInsumoSearch}" reflow="true" rows="10" paginator="false" 
-                                                         emptyMessage="No hay Valores">                                    
-                                                <p:column headerText="Código Interno" width="10%"> <h:outputText value="#{record1.codigo}"/> </p:column>
-                                                <p:column headerText="Grupo" width="10%"> <h:outputText value="#{record1.grupo.nombre}"/> </p:column>
-                                                <p:column headerText="Nombre INSUMO" width="40%"> <h:outputText value="#{record1.nombre}"/> </p:column>
-                                                <p:column headerText="Valor" width="10%"><h:outputText value="#{record1.precio}"><f:convertNumber currencySymbol="$" type="currency" /></h:outputText> </p:column>
-                                                <!--p:column id="tcantidad" headerText="Cantidad" width="10%" style="text-align: right;">
+                                    <div class="col-2">
+                                        <p:commandLink class="btn btn-blue rounded-bottom" value="" onclick="PF('dlg3').show()" ajax="true" >
+                                            <span class="pi pi-plus" />
+                                        </p:commandLink>
+                                    </div>
+                                </div>
+                                <br/>
+                                <p:accordionPanel widgetVar="basic">
+                                    <p:tab title="I. EQUIPOS">
+                                        <p class="m-0">
+                                            <p:dataTable id="products1" var="product" value="#{apuCtrl.apuMaestro.ifApuEquipoList}" editable="true"
+                                                         style="margin-bottom:20px">
+
+                                                <p:ajax event="rowEdit" listener="#{apuCtrl.onRowEditProducto}" update=":formCrearAPU:growl products1"/>
+                                                <p:ajax event="rowEditCancel" listener="#{apuCtrl.onRowCancelProducto}" update=":formCrearAPU:growl products1"/>
+
+                                                <p:column headerText="Codigo">
+                                                    <h:outputText value="#{product.insumo.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Descripción" class="col-md-4">
+                                                    <h:outputText value="#{product.insumo.nombre}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Tipo">
+                                                    <h:outputText value="#{product.insumo.unidadmedida.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Tarifa/Hora">
+                                                    <h:outputText value="#{product.insumo.precio}">
+                                                        <f:convertNumber minFractionDigits="0" type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column headerText="Rendimiento">
                                                     <p:cellEditor>
-                                                        <f:facet name="output"><h:outputText value="{record1.cantidad}" /></f:facet>
-                                                        <f:facet name="input" ><h:inputText id="cantidad" value="{record1.cantidad}"/></f:facet>
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{product.rendimiento}">
+                                                                <f:convertNumber type="currency" currencySymbol="% "/>
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                        <f:facet name="input">
+                                                            <h:inputText id="txtRedimiento" class="form-control" value="#{apuCtrl.rendimiento}">
+                                                            </h:inputText>
+                                                        </f:facet>
                                                     </p:cellEditor>
-                                                </p:column-->
-                                                <p:column exportable="false" headerText="Acción" width="5%">
-                                                    <p:commandButton id="btnadd" styleClass="btn-play" value="" process="@this,tblInsumoTemporal" 
-                                                                     update=":formCrearAPU:tblInsumo" action="#{apuCtrl.add(record1)}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Vr Unitario">
+                                                    <h:outputText value="#{product.vrUnitario}">
+                                                        <f:convertNumber groupingUsed="true" minFractionDigits="0"  type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column rendered="true" headerText="Edición">
+                                                    <p:rowEditor editTitle="Editar" cancelTitle="Cancelar" saveTitle="Confirmar"  />
+                                                </p:column>
+                                                <p:column rendered="true" headerText="Eliminar">
+                                                    <p:commandLink title="Eliminar" class="button rounded-button" ajax="true" actionListener="#{apuCtrl.onDltProducto(product)}" update=":formCrearAPU:growl  products1" >
+                                                        <i class="button rounded-button pi pi-trash" />
+                                                    </p:commandLink>
                                                 </p:column>
                                             </p:dataTable>
-                                        </div>
-                                    </div>
-                                </p:panel>
-                                <br/>
-                                <p:panel id="proyectado" header="INSUMOS QUE SE ADICIONARÁN AL APU">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <p:dataTable id="tblInsumo" editable="true" rowHover="true" var="record2" value="#{apuCtrl.listaInsumoApu}" 
-                                                         reflow="true" editMode="cell" rows="10" paginator="false" emptyMessage="No hay Valores">
-                                                <p:ajax event="rowEdit" process="@this,:formCrearAPU:tblInsumo, subtotal" listener="#{apuCtrl.onCellEdit}" update=":formCrearAPU:tblInsumo" />
+                                        </p>
+                                    </p:tab>
+                                    <p:tab title="II. MATERIALES">
+                                        <p class="m-0">
+                                            <p:dataTable id="materials1" var="material" value="#{apuCtrl.apuMaestro.ifApuMaterialesList}" editable="true"
+                                                         style="margin-bottom:20px">
 
-                                                <p:column headerText="Código Interno" width="10%"> <h:outputText value="#{record2.codigo}"/> </p:column>
-                                                <p:column headerText="Grupo" width="10%"> <h:outputText value="#{record2.grupo.nombre}"/> </p:column>
-                                                <p:column headerText="Nombre insumo" width="40%"> <h:outputText value="#{record2.nombre}"/> </p:column>
-                                                <p:column headerText="Unidad de medida" width="10%"> <h:outputText value="#{record2.unidadmedida.nombre}"/> </p:column>
-                                                <p:column headerText="Valor" id="valor" width="10%" style="text-align: right;" ><h:outputText value="#{record2.precio}"><f:convertNumber currencySymbol="$" type="currency" /></h:outputText> </p:column>
-                                                <p:column id="pcantidad" headerText="Cantidad" width="10%" style="text-align: right;">
+                                                <p:ajax event="rowEdit" listener="#{apuCtrl.onRowEditMaterial}" update=":formCrearAPU:growl materials1"/>
+                                                <p:ajax event="rowEditCancel" listener="#{apuCtrl.onRowCancelMaterial}" update=":formCrearAPU:growl materials1"/>
+
+                                                <p:column headerText="Codigo">
+                                                    <h:outputText value="#{material.insumo.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Descripción" class="col-md-4">
+                                                    <h:outputText value="#{material.insumo.nombre}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Unidad">
+                                                    <h:outputText value="#{material.insumo.unidadmedida.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Precio Unit.">
+                                                    <h:outputText value="#{material.insumo.precio}">
+                                                        <f:convertNumber type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column headerText="Cantidad">
+
                                                     <p:cellEditor>
-                                                        <f:facet name="output"><h:outputText value="#{record2.cantidad}" /></f:facet>
-                                                        <f:facet name="input" ><h:inputText id="cantidad" value="#{record2.cantidad}"/>
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{material.cantidad}">
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                        <f:facet name="input">
+                                                            <h:inputText id="txtEdCantidad" class="form-control" value="#{apuCtrl.edcantidad}">
+                                                            </h:inputText>
+                                                        </f:facet>
+                                                    </p:cellEditor>
+                                                </p:column>
+
+                                                <p:column headerText="Vr Unitario">
+                                                    <h:outputText value="#{material.vrUnitario}">
+                                                        <f:convertNumber groupingUsed="true" minFractionDigits="2"  type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column rendered="true" headerText="option">
+                                                    <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p>
+                                    </p:tab>
+                                    <p:tab title="III. TRANSPORTE">
+                                        <p class="m-0">
+                                            <p:dataTable id="transportes1" var="transporte" value="#{apuCtrl.apuMaestro.ifApuTransporteList}" editable="true"
+                                                         style="margin-bottom:20px">
+
+                                                <p:ajax event="rowEdit" listener="#{apuCtrl.onRowEditTransporte}" update=":formCrearAPU:growl transportes1"/>
+                                                <p:ajax event="rowEditCancel" listener="#{apuCtrl.onRowCancelTransporte}" update=":formCrearAPU:growl transportes1"/>
+
+                                                <p:column headerText="Codigo">
+                                                    <h:outputText value="#{transporte.insumo.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Descripción" class="col-md-4">
+                                                    <h:outputText value="#{transporte.insumo.nombre}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Unidad">
+                                                    <h:outputText value="#{transporte.insumo.unidadmedida.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Tarifa">
+                                                    <h:outputText value="#{transporte.insumo.precio}">
+                                                        <f:convertNumber type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column headerText="Cantidad">
+                                                    <p:cellEditor>
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{transporte.cantidad}">
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                        <f:facet name="input">
+                                                            <h:inputText id="txtEdCantidadTra" class="form-control" value="#{apuCtrl.edcantidad}">
+                                                            </h:inputText>
                                                         </f:facet>
                                                     </p:cellEditor>
 
                                                 </p:column>
-
-                                                <p:summaryRow></p:summaryRow>
-
-                                                <p:column headerText="Total" width="10%" style="text-align: right;">
-
-                                                    <h:outputText id="subtotal" value="#{record2.cantidad * record2.precio}">
-                                                        <f:convertNumber currencySymbol="$" type="currency" />
-                                                    </h:outputText>
-
+                                                <p:column headerText="Distancia">
+                                                    <p:cellEditor>
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{transporte.distancia}">
+                                                                <f:convertNumber  groupingUsed="true" minFractionDigits="2" />
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                        <f:facet name="input">
+                                                            <h:inputText id="txtEdDistancia" class="form-control" value="#{apuCtrl.eddistancia}">
+                                                            </h:inputText>
+                                                        </f:facet>
+                                                    </p:cellEditor>
                                                 </p:column>
 
-                                                <p:column exportable="false" headerText="Acción" width="5%">
-                                                    <p:commandButton id="btndelete" styleClass="btn-delete" value="" process="@this,tblInsumo" 
-                                                                     update="tblInsumo" action="#{apuCtrl.deleteInsumo(record2)}"/>
+                                                <p:column headerText="Vr Unitario">
+                                                    <h:outputText value="#{transporte.vrUnitario}">
+                                                        <f:convertNumber groupingUsed="true" minFractionDigits="2"  type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column rendered="true" headerText="option">
+                                                    <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
                                                 </p:column>
                                             </p:dataTable>
+                                        </p>
+                                    </p:tab>
+                                    <p:tab title="IV. MANO DE OBRA">
+                                        <p class="m-0">
+                                            <p:dataTable id="obras1" var="obra" value="#{apuCtrl.apuMaestro.ifApuManoObraList}" editable="true"
+                                                         style="margin-bottom:20px">
 
-                                        </div>
-                                    </div>
-                                </p:panel>   
+                                                <p:ajax event="rowEdit" listener="#{apuCtrl.onRowEditManoObra}" update=":formCrearAPU:growl"/>
+                                                <p:ajax event="rowEditCancel" listener="#{apuCtrl.onRowCancelManoObra}" update=":formCrearAPU:growl"/>
+
+                                                <p:column headerText="Codigo">
+                                                    <h:outputText value="#{obra.insumo.codigo}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Descripción" class="col-md-4">
+                                                    <h:outputText value="#{obra.insumo.nombre}"/>
+                                                </p:column>
+
+                                                <p:column headerText="Jornal">
+                                                    <h:outputText value="#{obra.jornal}">
+                                                        <f:convertNumber groupingUsed="true" maxFractionDigits="2" minFractionDigits="1" />
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column headerText="Jornal Total">
+                                                    <h:outputText value="#{obra.insumo.precio}">
+                                                        <f:convertNumber type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column headerText="Prestaciones(%)">
+                                                    <p:cellEditor>
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{obra.prestaciones}">
+                                                                <f:convertNumber type="currency" currencySymbol="% "/>
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                        <f:facet name="input">
+                                                            <h:inputText id="txtEdPrestacion" class="form-control" value="#{apuCtrl.edPrestaciones}">
+                                                            </h:inputText>
+                                                        </f:facet>
+                                                    </p:cellEditor>
+                                                </p:column>
+                                                <p:column headerText="Rendimiento">
+                                                    <p:cellEditor>
+                                                        <f:facet name="output">
+                                                            <h:outputText value="#{obra.rendimiento}">
+                                                            </h:outputText>
+                                                        </f:facet>
+                                                        <f:facet name="input">
+                                                            <h:inputText id="txtRendimento" class="form-control" value="#{apuCtrl.rendimiento}">
+                                                            </h:inputText>
+                                                        </f:facet>
+                                                    </p:cellEditor>
+                                                </p:column>
+
+                                                <p:column headerText="Vr Unitario">
+                                                    <h:outputText value="#{obra.vrUnitario}">
+                                                        <f:convertNumber groupingUsed="true" maxFractionDigits="2" minFractionDigits="2"  type="currency" currencySymbol="$ "/>
+                                                    </h:outputText>
+                                                </p:column>
+
+                                                <p:column rendered="true" headerText="option">
+                                                    <p:rowEditor editTitle="Edit Row" cancelTitle="Cancel Edit" saveTitle="Save Row"/>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p>
+                                    </p:tab>
+                                </p:accordionPanel>
                             </p:fieldset>
                             <br/>
                             <div class="row">
                                 <div class="col-md-12">
                                     <p:commandButton id="save"  disabled="" styleClass="btn btn-blue" update="tblVisitante" value="Almacenar" ajax="false"
-                                                     actionListener="#{apuCtrl.crear()}" />
+                                                     actionListener="#{apuCtrl.crearApu()}" />
                                     <p:commandButton styleClass="btn btn-red" type="reset" value="Borrar"/>
                                 </div>      
-                            </div>   
+                            </div>
+
+
+
+
                         </h:form>
                     </section>
                 </div>

@@ -44,75 +44,82 @@ import oracle.sql.StructDescriptor;
 @Stateless
 @ApplicationException(rollback = true)
 public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
+
     @PersistenceContext(unitName = "APUPU")
     EntityManager em;
     Query q;
     @EJB
-    private ApuDetalleFacade apuDetalleFacade;   
+    private ApuDetalleFacade apuDetalleFacade;
     @Resource(lookup = "jdbc/apu")
     private DataSource dataSource;
     private IfApuMaestro apuMaestro = new IfApuMaestro();
-    
+
     public ApuMaestroFacade() {
         super(IfApuMaestro.class);
     }
-    
+
     protected EntityManager getEntityManager() {
         return em;
     }
-    
 
     //crearApuMaestroTransaccion
     @Transactional
-    public boolean crearApuMaestroTransaccion (IfApuMaestro apuM,  List<IfApuDetalle> apuD) {
+    public boolean crearApuMaestroTransaccion(IfApuMaestro apuM, List<IfApuDetalle> apuD) {
         //em.getTransaction().begin();
         boolean r = false;
         em.persist(apuM);
         for (IfApuDetalle obj : apuD) {
-                apuDetalleFacade.crearApuDetalle(obj);
+            apuDetalleFacade.crearApuDetalle(obj);
         }
         em.flush();
-        r=true;
+        r = true;
         return r;
         //em.getTransaction().commit();
     }
-   
+
     public List<IfApuMaestro> findApuMaestroByID(Long id) {
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and d.id = :id");
         //System.out.println("Size actividades: "+q.getResultList().size());
         q.setParameter("id", id);
         return q.getResultList();
     }
- 
+
     public List<IfApuMaestro> listaApuMaestro() {
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 order by d.nombre");
         //System.out.println("Size # ingIfApuMaestros : "+q.getResultList().size());
         return q.getResultList();
     }
-    
+
     public List<IfApuMaestro> listaApuMaestroByTipo(Long tipo) {
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and d.tipo.id order by d.nombre, d.descripcion");
         //System.out.println("Size # ingIfApuMaestros : "+q.getResultList().size());
         return q.getResultList();
     }
-    
-    public Integer existeApuNombre(String nombre) {  
+
+    public Integer existeApuNombre(String nombre) {
         String txtUpper = nombre.toUpperCase();
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and d.nombre = :txtUpper");
         q.setParameter("txtUpper", txtUpper);
         return q.getResultList().size();
     }
-      
+
+    public IfApuMaestro apuNombreFind(String nombre) {
+        String txtUpper = nombre.toUpperCase();
+        Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and d.nombre = :txtUpper");
+        q.setParameter("txtUpper", txtUpper);
+        return (IfApuMaestro) q.getResultList().get(0);
+    }
+
     public void aprobarApu(BigDecimal id) {
         Query q = em.createQuery("UPDATE IfApuMaestro d SET d.etapa.id = 2 WHERE d.id = :id");
         q.setParameter("id", id);
     }
-    
+
     public void cancelarApu(BigDecimal id) {
         Query q = em.createQuery("UPDATE IfApuMaestro d SET d.etapa.id = 4 WHERE d.id = :id");
         q.setParameter("id", id);
     }
-    
+
     public List<IfApuMaestro> listaApuMaestroLimitado() {
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 order by d.nombre").setMaxResults(25);
         //System.out.println("Size # ingIfApuMaestros : "+q.getResultList().size());
@@ -120,43 +127,42 @@ public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
         ////System.out.println("Contenido actividades: "+q.getResultList());
         return q.getResultList();
     }
-    
-    
+
     public List<IfApuMaestro> listaApuMaestroConsecutivo(String consecutivo) {
-        
+
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and d.consecutivo");
         q.setParameter("consecutivo", consecutivo);
         return q.getResultList();
     }
-    
+
     public List<IfApuMaestro> listaApuMaestroSearchLista(String txt) {
         String txtUpper = txt.toUpperCase();
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and (UPPER(d.descripcion) like :txt) ORDER BY d.nombre");
-        q.setParameter("txt", "%"+txtUpper+"%");
+        q.setParameter("txt", "%" + txtUpper + "%");
         return q.getResultList();
     }
-     
+
     public List<IfApuMaestro> listaApuMaestroSearch(String txt) {
         String txtUpper = txt.toUpperCase();
         Query q = em.createQuery("SELECT d FROM IfApuMaestro d WHERE d.estadoregistro = 1 and (UPPER(d.descripcion) like :txt) AND d.etapa.id = 2 ORDER BY d.nombre");
-        q.setParameter("txt", "%"+txtUpper+"%");
+        q.setParameter("txt", "%" + txtUpper + "%");
         return q.getResultList();
     }
-     
+
     public boolean actualizarApuMaestro(IfApuMaestro IfApuMaestro) {
         em.merge(IfApuMaestro);
         em.flush();
         return true;
     }
-       
-      public boolean crearApuMaestro(IfApuMaestro IfApuMaestro) {
+
+    public boolean crearApuMaestro(IfApuMaestro IfApuMaestro) throws SQLException {
         boolean r = false;
         em.persist(IfApuMaestro);
         em.flush();
-        r=true;
+        r = true;
         return r;
     }
-    
+
     @Transactional
     public boolean crearIfApuMaestro(IfApuMaestro ingIfApuMaestro1, IfApuMaestro ingIfApuMaestro2) {
         //em.getTransaction().begin();
@@ -164,7 +170,7 @@ public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
         em.persist(ingIfApuMaestro1);
         em.persist(ingIfApuMaestro2);
         em.flush();
-        r=true;
+        r = true;
         return r;
         //em.getTransaction().commit();
     }
@@ -176,18 +182,17 @@ public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
         em.flush();
         return true;
     }
-    
-       
+
     @TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
-    public GenericProcedureResponse InsertaAPU( IfApuMaestro apu, 
-            Date fechaCreacion, 
-            String usuario, List<IfApuDetalle> listApuDetalle) throws SQLException{
-        
+    public GenericProcedureResponse InsertaAPU(IfApuMaestro apu,
+            Date fechaCreacion,
+            String usuario, List<IfApuDetalle> listApuDetalle) throws SQLException {
+
         CallableStatement cstmt = null;
         Connection connection;
         oracle.jdbc.OracleConnection oraCon = null;
         GenericProcedureResponse response = new GenericProcedureResponse();
-        
+
         try {
 
             connection = dataSource.getConnection();
@@ -205,21 +210,21 @@ public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
                 P_CONSECUTIVO     Out Number, 8
                 Error_Num         Out Number, 9
                 Error_Msg         Out Varchar2 10
-            */
+             */
             cstmt.setString(1, apu.getNombre());
             cstmt.setString(2, apu.getDescripcion());
             cstmt.setBigDecimal(3, new BigDecimal(apu.getEmpresa()));
             cstmt.setString(4, apu.getUsuariocreacion());
             cstmt.setLong(5, apu.getTipo().getId());
             cstmt.setLong(6, apu.getCantidad());
-            
+
             //cstmt.setString(7, motivoReversion);
             cstmt.registerOutParameter(8, OracleTypes.NUMBER);
             cstmt.registerOutParameter(9, OracleTypes.NUMBER);
             cstmt.registerOutParameter(10, OracleTypes.VARCHAR);
 
             cstmt.executeQuery();
-            
+
             String consecutivoResult = cstmt.getString(8);
             Long errorNumProcess = cstmt.getLong(9);
             String errorMsgProcess = cstmt.getString(10);
@@ -233,7 +238,7 @@ public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
             response.setObject(object);
 
             return response;
-            */
+             */
         } catch (Exception ex) {
             /**/
 
@@ -252,8 +257,7 @@ public class ApuMaestroFacade extends AbstractFacade<IfApuMaestro> {
 
         }
         return null;
-        
+
     }
 
 }
-
