@@ -34,6 +34,11 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "PgEtapa.findAll", query = "SELECT p FROM PgEtapa p")})
 public class PgEtapa implements Serializable {
 
+    @OneToMany(mappedBy = "etapa")
+    private List<GeInsumo> geInsumoList;
+    @OneToMany(mappedBy = "etapa")
+    private List<IfApuMaestro> ifApuMaestroList;
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -184,6 +189,24 @@ public class PgEtapa implements Serializable {
     @Override
     public String toString() {
         return "entities.PgEtapa[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<GeInsumo> getGeInsumoList() {
+        return geInsumoList;
+    }
+
+    public void setGeInsumoList(List<GeInsumo> geInsumoList) {
+        this.geInsumoList = geInsumoList;
+    }
+
+    @XmlTransient
+    public List<IfApuMaestro> getIfApuMaestroList() {
+        return ifApuMaestroList;
+    }
+
+    public void setIfApuMaestroList(List<IfApuMaestro> ifApuMaestroList) {
+        this.ifApuMaestroList = ifApuMaestroList;
     }
     
 }

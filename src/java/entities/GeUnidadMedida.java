@@ -34,6 +34,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GeUnidadMedida.findAll", query = "SELECT g FROM GeUnidadMedida g")})
 public class GeUnidadMedida implements Serializable {
 
+    @OneToMany(mappedBy = "unidadmedida")
+    private List<IfApuMaestro> ifApuMaestroList;
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -196,6 +199,15 @@ public class GeUnidadMedida implements Serializable {
     @Override
     public String toString() {
         return "entities.GeUnidadMedida[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public List<IfApuMaestro> getIfApuMaestroList() {
+        return ifApuMaestroList;
+    }
+
+    public void setIfApuMaestroList(List<IfApuMaestro> ifApuMaestroList) {
+        this.ifApuMaestroList = ifApuMaestroList;
     }
     
 }

@@ -41,6 +41,17 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "IfApuMaestro.findAll", query = "SELECT i FROM IfApuMaestro i")})
 public class IfApuMaestro implements Serializable {
 
+    @Column(name = "CANTIDAD")
+    private Long cantidad;
+    @OneToMany(mappedBy = "apu")
+    private List<IfApuMateriales> ifApuMaterialesList;
+    @OneToMany(mappedBy = "apu")
+    private List<IfApuManoObra> ifApuManoObraList;
+    @OneToMany(mappedBy = "apu")
+    private List<IfApuTransporte> ifApuTransporteList;
+    @OneToMany(mappedBy = "apu")
+    private List<IfApuEquipo> ifApuEquipoList;
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -79,8 +90,6 @@ public class IfApuMaestro implements Serializable {
     private Date fechaaprobacion;
     @Column(name = "USUARIOAPROBACION")
     private String usuarioaprobacion;
-    @Column(name = "CANTIDAD")
-    private Long cantidad;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "apumaestro")
     private List<IfApuDetalle> ifApuDetalleList;
     @JoinColumn(name = "UNIDADMEDIDA", referencedColumnName = "ID")
@@ -208,13 +217,6 @@ public class IfApuMaestro implements Serializable {
         this.usuarioaprobacion = usuarioaprobacion;
     }
 
-    public Long getCantidad() {
-        return cantidad;
-    }
-
-    public void setCantidad(Long cantidad) {
-        this.cantidad = cantidad;
-    }
 
     @XmlTransient
     public List<IfApuDetalle> getIfApuDetalleList() {
@@ -280,6 +282,50 @@ public class IfApuMaestro implements Serializable {
     @Override
     public String toString() {
         return "entities.IfApuMaestro[ id=" + id + " ]";
+    }
+
+    public Long getCantidad() {
+        return cantidad;
+    }
+
+    public void setCantidad(Long cantidad) {
+        this.cantidad = cantidad;
+    }
+
+    @XmlTransient
+    public List<IfApuMateriales> getIfApuMaterialesList() {
+        return ifApuMaterialesList;
+    }
+
+    public void setIfApuMaterialesList(List<IfApuMateriales> ifApuMaterialesList) {
+        this.ifApuMaterialesList = ifApuMaterialesList;
+    }
+
+    @XmlTransient
+    public List<IfApuManoObra> getIfApuManoObraList() {
+        return ifApuManoObraList;
+    }
+
+    public void setIfApuManoObraList(List<IfApuManoObra> ifApuManoObraList) {
+        this.ifApuManoObraList = ifApuManoObraList;
+    }
+
+    @XmlTransient
+    public List<IfApuTransporte> getIfApuTransporteList() {
+        return ifApuTransporteList;
+    }
+
+    public void setIfApuTransporteList(List<IfApuTransporte> ifApuTransporteList) {
+        this.ifApuTransporteList = ifApuTransporteList;
+    }
+
+    @XmlTransient
+    public List<IfApuEquipo> getIfApuEquipoList() {
+        return ifApuEquipoList;
+    }
+
+    public void setIfApuEquipoList(List<IfApuEquipo> ifApuEquipoList) {
+        this.ifApuEquipoList = ifApuEquipoList;
     }
     
 }

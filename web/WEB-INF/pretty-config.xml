@@ -17,15 +17,23 @@
         <pattern value="/home/apu" />
         <view-id value="/faces/views/apu/listar.xhtml" />
     </url-mapping>
+    <url-mapping>
+        <pattern value="/home/apu/editar" />
+        <view-id value="/faces/views/apu/editarApu.xhtml" />
+    </url-mapping>
     
     <url-mapping>
-        <pattern value="/home/apu/crear" />
+        <pattern value="/home/apu/crear/new" />
         <view-id value="/faces/views/apu/crearApu.xhtml" />
+    </url-mapping>
+    <url-mapping>
+        <pattern value="/home/apu/crear" />
+        <view-id value="/faces/views/apu/crearApuNew.xhtml" />
     </url-mapping>
     
     <url-mapping>
         <pattern value="/home/apu/ver" />
-        <view-id value="/faces/views/apu/verApu.xhtml" />
+        <view-id value="/faces/views/apu/verApuNew.xhtml" />
     </url-mapping>
     
     <url-mapping>

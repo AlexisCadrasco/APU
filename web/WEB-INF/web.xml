@@ -39,4 +39,33 @@
     <welcome-file-list>
         <welcome-file>faces/views/index.xhtml</welcome-file>
     </welcome-file-list>
+    
+    <!-- PrettyFaces Filter -->
+    <filter>
+        <filter-name>Pretty Filter</filter-name>
+        <filter-class>com.ocpsoft.pretty.PrettyFilter</filter-class>
+    </filter>
+    <!-- My own view Filter -->
+    <filter>
+        <filter-name>View Filter</filter-name>
+        <filter-class>com.jasoni.ViewFilter</filter-class>
+    </filter>
+    <!-- mappings -->
+    <filter-mapping>
+        <filter-name>Pretty Filter</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>View Filter</filter-name>
+        <url-pattern>*.xhtml</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+        <dispatcher>ERROR</dispatcher>
+    </filter-mapping>
+    
+    
 </web-app>

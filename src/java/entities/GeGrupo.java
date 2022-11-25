@@ -35,6 +35,9 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "GeGrupo.findAll", query = "SELECT g FROM GeGrupo g")})
 public class GeGrupo implements Serializable {
 
+    @Column(name = "CODIGO", length = 5)
+    private String codigo;
+
     private static final long serialVersionUID = 1L;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Id
@@ -198,6 +201,14 @@ public class GeGrupo implements Serializable {
     @Override
     public String toString() {
         return "entities.GeGrupo[ id=" + id + " ]";
+    }
+
+    public String getCodigo() {
+        return codigo;
+    }
+
+    public void setCodigo(String codigo) {
+        this.codigo = codigo;
     }
     
 }

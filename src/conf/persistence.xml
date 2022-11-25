@@ -2,7 +2,38 @@
 <persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
   <persistence-unit name="APUPU" transaction-type="JTA">
     <jta-data-source>jdbc/apu</jta-data-source>
-    <exclude-unlisted-classes>false</exclude-unlisted-classes>
+    <class>entities.GeClase</class>
+    <class>entities.GeEmpresa</class>
+    <class>entities.GeEntidad</class>
+    <class>entities.GeFamilia</class>
+    <class>entities.GeGrupo</class>
+    <class>entities.GeInsumo</class>
+    <class>entities.GeInsumoDetalle</class>
+    <class>entities.GeMarca</class>
+    <class>entities.GeProducto</class>
+    <class>entities.GeSegmento</class>
+    <class>entities.GeSubGrupo</class>
+    <class>entities.GeUnidadMedida</class>
+    <class>entities.IfApuDetalle</class>
+    <class>entities.IfApuEquipo</class>
+    <class>entities.IfApuMaestro</class>
+    <class>entities.IfApuManoObra</class>
+    <class>entities.IfApuMateriales</class>
+    <class>entities.IfApuTransporte</class>
+    <class>entities.IfPresupuestoDet</class>
+    <class>entities.IfPresupuestoEnc</class>
+    <class>entities.IfTipoApu</class>
+    <class>entities.PgEtapa</class>
+    <class>entities.PgMenu</class>
+    <class>entities.PgParametro</class>
+    <class>entities.PgParametroValor</class>
+    <class>entities.PgRol</class>
+    <class>entities.PgRolMenu</class>
+    <class>entities.PgTipoPresupuesto</class>
+    <class>entities.PgUsuario</class>
+    <class>entities.PgUsuarioRol</class>
+    <class>entities.PrEtiqueta</class>
+    <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.schema-generation.database.action" value="create"/>
     </properties>
