@@ -6,3 +6,5 @@ dist/
 test/
 #Excluye la carpeta con la cofiguracion del proyecto en el IDE local
 nbproject/
+
+#Este comentario es una prueba para el commit de cambios en archivo .ignore
